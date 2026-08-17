@@ -7,11 +7,11 @@ description: Task list for qwen38-27b-dual-5090-deployment phase 5.
 ## Input
 - Canonical sources:
   - `README.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
 
 ## Canonical architecture / Key constraints
 - Keep architecture aligned with qwen38-27b-dual-5090-deployment scope docs and contracts.
@@ -32,11 +32,11 @@ Goal: Prove multi-turn local tool-call continuity before declaring the agent pro
 Definition of Done: A 20-50 turn soak passes with exactly one valid tool call per turn, valid arguments, retained responses, and a post-run clean host gate.
 
 Tasks:
-- [ ] T081 [Agentic] Run deterministic tool-call soak
+- [x] T081 [Agentic] Run deterministic tool-call soak
   - DoD: `python3 scripts/soak-agent.py --turns 20` retains all responses with one `lookup` call and the expected integer argument per turn.
-- [ ] T082 [QA] Review agent response failure modes
+- [x] T082 [QA] Review agent response failure modes
   - DoD: Evidence confirms no empty response, malformed arguments, duplicate tool call, special token leakage, or runaway output in the accepted run.
-- [ ] T083 [Security] Confirm post-soak integrity
+- [x] T083 [Security] Confirm post-soak integrity
   - DoD: `scripts/preflight.sh` passes after the soak and the active checklist records final evidence paths and residual risk.
 
 Checkpoint: Only a completed Phase 5 may propose an `agent` production profile.

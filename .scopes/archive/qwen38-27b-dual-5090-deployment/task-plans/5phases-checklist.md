@@ -6,8 +6,8 @@ description: Execution and verification checklist for qwen38-27b-dual-5090-deplo
 
 ## Input
 - Canonical docs under:
-  - `.scopes/qwen38-27b-dual-5090-deployment`
-  - `.scopes/qwen38-27b-dual-5090-deployment/task-plans`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/task-plans`
 
 ## Rules
 - Use this file as the single progress and audit hub.
@@ -20,7 +20,7 @@ description: Execution and verification checklist for qwen38-27b-dual-5090-deplo
 | Phase 1 | Complete | 100% | Pass | 0 |
 | Phase 2 | Complete | 100% | Pass | 0 |
 | Phase 3 | Complete | 100% | Pass | 0 |
-| Phase 4 | In progress | 75% | Capacity pass | 1: isolated PP/TG |
+| Phase 4 | Complete | 100% | Pass | 0 |
 | Phase 5 | Complete | 100% | Pass | 0 |
 
 ## Phase Entry Links
@@ -56,15 +56,23 @@ description: Execution and verification checklist for qwen38-27b-dual-5090-deplo
 ### Phases 3-5 - 2026-08-17
 
 - Phase 3 result: pass. 32K server health, models, Chinese, JSON, and Python probes passed.
-- Phase 4 result: capacity pass, performance pending. The 128K F16 KV server loaded with 14.3/13.6 GiB free VRAM on GPU0/GPU1; a 62,438-token needle retrieval passed and the post-run host gate passed. A `llama-bench` attempt ran while server memory was resident and is invalid; `benchmark-runtime.sh` now refuses that state.
+- Phase 4 result: pass. The 128K F16-KV server loaded with 14.3/13.6 GiB free VRAM on GPU0/GPU1; a 62,438-token needle retrieval and post-run host gate passed. The isolated `evidence/benchmark-20260817T152536Z/` run used CUDA0 and CUDA1 with no running server and recorded PP512 4303.88, PP4096 5552.22, PP32768 5059.20, and TG128 52.70 tok/s. Its peak samples left 17,563/16,632 MiB free on GPU0/GPU1 and the final host gate passed.
 - Phase 5 result: pass. With upstream `Qwen3.5-4B.jinja` supplied because the GGUF lacks an embedded template, the required tool-call A/B returned `lookup({"turn":1})`; `soak-agent.py --turns 20` passed.
 
 ## Final Release Gate
 - [x] Scope constraints and model identity are preserved.
 - [x] Upstream CUDA build and two-device verification pass.
-- [ ] 32K basic behavior probe passes.
-- [ ] 128K F16 KV long-context baseline passes.
+- [x] 32K basic behavior probe passes.
+- [x] 128K F16 KV long-context baseline passes.
 - [x] 128K F16 KV startup and long-context retrieval pass.
 - [x] 20-50 turn tool-call soak passes.
-- [ ] Isolated PP/TG benchmark passes with no running server.
-- [ ] No host-integrity event occurs during formal acceptance.
+- [x] Isolated PP/TG benchmark passes with no running server.
+- [x] No host-integrity event occurs during formal acceptance.
+
+
+## Archive Record
+
+- Archived on 2026-08-17 under `.scopes/archive/qwen38-27b-dual-5090-deployment/`.
+- Archive purpose: preserve the completed qwen38-27b-dual-5090-deployment audit trail.
+- Future enhancements should use a new `repo-task-driven` scope under `.scopes/<enhancement-scope>/`.
+- Archived docs should only change for factual errata or path-maintenance updates.

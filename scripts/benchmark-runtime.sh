@@ -25,9 +25,21 @@ fi
 } | tee "$run_dir/environment.txt"
 nvidia-smi --query-gpu=index,name,memory.used,memory.free,power.draw --format=csv,noheader | tee "$run_dir/gpu-before.csv"
 
-"$bench" -m "$model" --load-mode dio -dev CUDA0,CUDA1 -sm layer \
-  --fit-target 4096,4096 -ctk f16 -ctv f16 -fa on \
+nvidia-smi --query-gpu=index,name,memory.used,memory.free,power.draw --format=csv,noheader -l 1 \
+  >"$run_dir/gpu-samples.csv" &
+sampler_pid=$!
+cleanup() {
+  kill "$sampler_pid" 2>/dev/null || true
+  wait "$sampler_pid" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+"$bench" -m "$model" --load-mode dio -dev CUDA0/CUDA1 -sm layer \
+  --fit-target 4096 -ctk f16 -ctv f16 -fa on \
   -p 512,4096,32768 -n 128 -b 1024 -ub 256 -o jsonl | tee "$run_dir/llama-bench.jsonl"
+
+cleanup
+trap - EXIT
 
 nvidia-smi --query-gpu=index,name,memory.used,memory.free,power.draw --format=csv,noheader | tee "$run_dir/gpu-after.csv"
 free -h | tee "$run_dir/memory-after.txt"

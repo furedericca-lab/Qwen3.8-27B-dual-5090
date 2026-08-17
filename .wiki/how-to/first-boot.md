@@ -9,7 +9,7 @@ code_anchors: []
 source_docs: [README.md, AGENTS.md]
 tags: [first-boot, llama-cpp, validation]
 last_checked: 2026-08-17
-updated: 2026-08-17T15:15:00Z
+updated: 2026-08-17T15:30:00Z
 ---
 
 # First Boot
@@ -17,8 +17,8 @@ updated: 2026-08-17T15:15:00Z
 1. Run `scripts/build-llama.sh`.
 2. Run `scripts/inspect-model.sh` and confirm the recorded identity.
 3. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure.
-4. Start the 32K smoke with `scripts/llama-server.sh`.
+4. Reproduce the 32K smoke with `PROFILE=baseline scripts/llama-server.sh` when needed.
 5. Run `scripts/probe-basic.sh` from another terminal.
-6. Record resource use and only then test `CONTEXT=131072 scripts/llama-server.sh`.
+6. Start the accepted production runtime with `PROFILE=agent scripts/llama-server.sh`.
 
-The launcher has no MTP or CPU-offload option. Do not append ad-hoc arguments to it; test a changed variable through an explicit, recorded candidate.
+The launcher has no MTP or CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments to it; test a changed variable through an explicit, recorded candidate.

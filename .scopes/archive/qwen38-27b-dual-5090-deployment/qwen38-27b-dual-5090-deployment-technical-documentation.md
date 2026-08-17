@@ -14,7 +14,7 @@ The external model is immutable and never enters Git. Runtime is two CUDA device
 
 ## Major Decisions and Trade-offs
 
-The 4096 MiB fit target is a conservative unverified initial margin and must be compared using minimum free VRAM. A 32K smoke deliberately precedes the 128K production candidate. F16 KV is chosen before compressed KV because the model weights leave substantial dual-GPU capacity to measure.
+The 4096 MiB fit target is the accepted initial margin. The 32K smoke preceded the accepted 128K production `agent` profile; any future candidate must still compare minimum free VRAM. F16 KV is retained because the model weights leave substantial dual-GPU capacity. The isolated CUDA0-and-CUDA1 benchmark measured PP512 4303.88, PP4096 5552.22, PP32768 5059.20, and TG128 52.70 tok/s.
 
 ## Module Boundaries and Data Flow
 

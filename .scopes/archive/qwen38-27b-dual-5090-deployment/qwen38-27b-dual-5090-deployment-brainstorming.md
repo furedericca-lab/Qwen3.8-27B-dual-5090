@@ -26,7 +26,7 @@ The scope covers model identity, an upstream llama.cpp CUDA build, a 32K smoke, 
 |---|---|---|---|
 | Runtime source | Official upstream; historical fork | Upstream supplies `qwen35` and `--load-mode dio`; no missing function is evidenced. | [research notes](qwen38-27b-dual-5090-deployment-implementation-research-notes.md) |
 | Initial KV/context | 128K F16; 32K F16 smoke; compressed KV | A 32K smoke proves loading before any 128K claim; F16 KV is quality-first. | [milestones](qwen38-27b-dual-5090-deployment-scope-milestones.md) |
-| MTP | Enable by inheritance; omit | GGUF inspection reports zero MTP tensors. | [metadata](../../.wiki/reference/model-metadata.md) |
+| MTP | Enable by inheritance; omit | GGUF inspection reports zero MTP tensors. | [metadata](../../../.wiki/reference/model-metadata.md) |
 
 ## Decision Summary
 

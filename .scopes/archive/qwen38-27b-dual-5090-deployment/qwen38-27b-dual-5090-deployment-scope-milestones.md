@@ -12,7 +12,7 @@ description: Scope boundaries and milestones for qwen38-27b-dual-5090-deployment
 
 ## Out of Scope
 
-- Deleting either old local repository or changing their GitHub state.
+- Changing either retired project's GitHub state.
 - BF16/F16/Q6/IQ/MXFP quantization, model conversion, pruning, REAP, MTP tuning, vLLM, CPU offload, or a 256K production profile.
 
 ## Decision Log
@@ -36,7 +36,7 @@ Phase 1 blocks every later phase. Phase 2 depends on Phase 1. Phase 3 depends on
 
 ## Exit Criteria
 
-The scope closes only when the model identity, upstream binary, 128K runtime, behavior suite, resource measurements, and a 20-50 turn soak are retained as successful evidence from an admissible host boot.
+The scope closes when the model identity, upstream binary, 128K runtime, behavior suite, resource measurements, and a 20-50 turn soak are retained as successful evidence from an admissible host boot. Under a later explicit user authorization, the retired local DeepSeek/Qwen3.6 projects and Qwen3.6 model were removed; no GitHub project state changed.
 
 ## Escalation Triggers
 

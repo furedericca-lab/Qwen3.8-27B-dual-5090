@@ -7,11 +7,11 @@ description: Task list for qwen38-27b-dual-5090-deployment phase 3.
 ## Input
 - Canonical sources:
   - `README.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
 
 ## Canonical architecture / Key constraints
 - Keep architecture aligned with qwen38-27b-dual-5090-deployment scope docs and contracts.
@@ -32,11 +32,11 @@ Goal: Prove the fixed model loads and behaves coherently with the canonical base
 Definition of Done: A clean preflight, local server startup, health/models endpoints, basic Chinese/JSON/Python responses, and post-run resource/kernel snapshot are retained.
 
 Tasks:
-- [ ] T041 [Infra] Start the 32K canonical server
+- [x] T041 [Infra] Start the 32K canonical server
   - DoD: `scripts/llama-server.sh` starts on `127.0.0.1:8000` after `scripts/preflight.sh` passes.
-- [ ] T042 [QA] Execute basic behavior probes
+- [x] T042 [QA] Execute basic behavior probes
   - DoD: `scripts/probe-basic.sh` retains health, models, Chinese, JSON, and Python responses without empty/special-token output.
-- [ ] T043 [Security] Confirm post-run host integrity
+- [x] T043 [Security] Confirm post-run host integrity
   - DoD: `scripts/preflight.sh` passes after shutdown; evidence includes GPU/RAM/swap state and exit status.
 
 Checkpoint: Phase 4 must not claim 128K before this 32K smoke passes.

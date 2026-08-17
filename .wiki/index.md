@@ -16,12 +16,14 @@ tags:
   - qwen38
   - llama-cpp
 last_checked: 2026-08-17
-updated: 2026-08-17T15:13:58Z
+updated: 2026-08-17T15:31:27Z
 generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 ---
 
+
+
 <!-- BEGIN AUTO -->
-- Last rebuilt: 2026-08-17T15:13:58Z
+- Last rebuilt: 2026-08-17T15:31:27Z
 - Page count: 5
 
 ## By Type
@@ -32,16 +34,16 @@ generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 
 ### decision
 
-- [Deployment Baseline](decisions/deployment-baseline.md) | status: accepted | updated: 2026-08-17T15:15:00Z
+- [Deployment Baseline](decisions/deployment-baseline.md) | status: accepted | updated: 2026-08-17T15:30:00Z
 
 ### how-to
 
-- [First Boot](how-to/first-boot.md) | status: current | updated: 2026-08-17T15:15:00Z
+- [First Boot](how-to/first-boot.md) | status: current | updated: 2026-08-17T15:30:00Z
 
 ### reference
 
 - [Production Model Metadata](reference/model-metadata.md) | status: current | updated: 2026-08-17T15:15:00Z
-- [VRAM Budget](reference/vram-budget.md) | status: current | updated: 2026-08-17T15:15:00Z
+- [VRAM Budget](reference/vram-budget.md) | status: current | updated: 2026-08-17T15:30:00Z
 
 ## By Scope
 
@@ -60,11 +62,11 @@ generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 
 ## Recently Updated
 
+- 2026-08-17T15:30:00Z | [Deployment Baseline](decisions/deployment-baseline.md)
+- 2026-08-17T15:30:00Z | [First Boot](how-to/first-boot.md)
+- 2026-08-17T15:30:00Z | [VRAM Budget](reference/vram-budget.md)
 - 2026-08-17T15:15:00Z | [Host Integrity](debugging/host-integrity.md)
-- 2026-08-17T15:15:00Z | [Deployment Baseline](decisions/deployment-baseline.md)
-- 2026-08-17T15:15:00Z | [First Boot](how-to/first-boot.md)
 - 2026-08-17T15:15:00Z | [Production Model Metadata](reference/model-metadata.md)
-- 2026-08-17T15:15:00Z | [VRAM Budget](reference/vram-budget.md)
 
 ## Stale Or Draft
 

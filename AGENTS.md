@@ -31,7 +31,7 @@ The sibling BF16 file is not a serving input. A model-path override is only allo
 
 `llama.cpp/` is the official `ggml-org/llama.cpp` submodule pinned by this repository's gitlink. Do not edit the submodule or pull it independently. Upgrade it only through a candidate build, basic probe, benchmark, agent soak, and a committed parent pin.
 
-`scripts/llama-server.sh` is the sole canonical server launcher. The only defined profile until benchmarks exist is `baseline`: F16 KV, one slot, Flash Attention, GPU KV, two GPUs, localhost. Its first 32K smoke precedes the separately evidenced 128K baseline.
+`scripts/llama-server.sh` is the sole canonical server launcher. `agent` is the accepted production default: 128K, F16 KV, one slot, Flash Attention, GPU KV, two GPUs, and localhost. `baseline` is a fixed 32K smoke profile. No `long` profile exists until a 256K candidate is separately evidenced.
 
 It uses `--load-mode dio`, `--fit on --fit-target 4096,4096`, and no CPU weight/KV offload. `--fit-target` is final free VRAM margin per GPU, not KV reservation: increasing it leaves more margin and may offload more weights. Do not add `--no-kv-offload`; GPU KV is llama.cpp's default.
 

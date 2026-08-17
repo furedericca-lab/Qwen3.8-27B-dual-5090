@@ -7,11 +7,11 @@ description: Task list for qwen38-27b-dual-5090-deployment phase 2.
 ## Input
 - Canonical sources:
   - `README.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
-  - `.scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-brainstorming.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-technical-documentation.md`
+  - `.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-contracts.md`
 
 ## Canonical architecture / Key constraints
 - Keep architecture aligned with qwen38-27b-dual-5090-deployment scope docs and contracts.
