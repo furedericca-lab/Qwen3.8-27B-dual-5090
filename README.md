@@ -18,8 +18,8 @@ The model remains outside Git at `/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/R
 | Model identity | Recorded |
 | CUDA build | Pending |
 | 32K smoke | Pending |
-| 128K baseline | Pending |
-| Agent soak | Pending |
+| 128K baseline | Partial: startup and 62K retrieval pass; isolated PP/TG pending |
+| Agent soak | 20-turn tool-call pass |
 
 ## Build
 

@@ -27,5 +27,6 @@ exec "$server" \
   -b 1024 \
   -ub 256 \
   -fa on \
+  --chat-template-file "$root/llama.cpp/models/templates/Qwen3.5-4B.jinja" \
   --host 127.0.0.1 \
   --port "$port"

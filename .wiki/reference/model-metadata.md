@@ -36,4 +36,4 @@ Tensor count: 851
 MTP tensors: 0
 ```
 
-No `nextn_predict_layers` metadata or MTP tensors were present. Chat-template behavior remains a runtime behavior-probe gate rather than a documented claim.
+No `nextn_predict_layers` metadata, MTP tensors, or embedded chat template were present. The canonical launcher therefore supplies upstream `models/templates/Qwen3.5-4B.jinja`; a 128K A/B returned a valid required tool call with `{"turn":1}`.

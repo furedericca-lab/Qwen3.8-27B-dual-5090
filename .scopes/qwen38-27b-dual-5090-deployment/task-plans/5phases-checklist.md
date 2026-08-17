@@ -19,9 +19,9 @@ description: Execution and verification checklist for qwen38-27b-dual-5090-deplo
 |---|---|---|---|---|
 | Phase 1 | Complete | 100% | Pass | 0 |
 | Phase 2 | Complete | 100% | Pass | 0 |
-| Phase 3 | In progress | 0% | Not run | 0 |
-| Phase 4 | Not started | 0% | Not run | 1: Phase 3 |
-| Phase 5 | Not started | 0% | Not run | 1: Phase 4 |
+| Phase 3 | Complete | 100% | Pass | 0 |
+| Phase 4 | In progress | 75% | Capacity pass | 1: isolated PP/TG |
+| Phase 5 | Complete | 100% | Pass | 0 |
 
 ## Phase Entry Links
 1. [phase-1-qwen38-27b-dual-5090-deployment.md](phase-1-qwen38-27b-dual-5090-deployment.md)
@@ -53,10 +53,18 @@ description: Execution and verification checklist for qwen38-27b-dual-5090-deplo
 - Evidence commands: `git -C llama.cpp fetch origin`, `git -C llama.cpp rev-list --left-right --count HEAD...origin/master`, `git -C llama.cpp merge --ff-only origin/master`.
 - Result: pass. Local and remote official `master` are both `34af94cd9ab277632e27caeec2d41de2fd091b31`; no rebuild is required because no code changed.
 
+### Phases 3-5 - 2026-08-17
+
+- Phase 3 result: pass. 32K server health, models, Chinese, JSON, and Python probes passed.
+- Phase 4 result: capacity pass, performance pending. The 128K F16 KV server loaded with 14.3/13.6 GiB free VRAM on GPU0/GPU1; a 62,438-token needle retrieval passed and the post-run host gate passed. A `llama-bench` attempt ran while server memory was resident and is invalid; `benchmark-runtime.sh` now refuses that state.
+- Phase 5 result: pass. With upstream `Qwen3.5-4B.jinja` supplied because the GGUF lacks an embedded template, the required tool-call A/B returned `lookup({"turn":1})`; `soak-agent.py --turns 20` passed.
+
 ## Final Release Gate
 - [x] Scope constraints and model identity are preserved.
 - [x] Upstream CUDA build and two-device verification pass.
 - [ ] 32K basic behavior probe passes.
 - [ ] 128K F16 KV long-context baseline passes.
-- [ ] 20-50 turn tool-call soak passes.
+- [x] 128K F16 KV startup and long-context retrieval pass.
+- [x] 20-50 turn tool-call soak passes.
+- [ ] Isolated PP/TG benchmark passes with no running server.
 - [ ] No host-integrity event occurs during formal acceptance.

@@ -28,7 +28,8 @@ tool = {'type': 'function', 'function': {'name': 'lookup', 'description': 'Retur
 history = []
 
 for expected_turn in range(1, args.turns + 1):
-    response = request(args.base_url + '/v1/chat/completions', {'model': 'default', 'messages': messages, 'tools': [tool], 'tool_choice': 'required', 'temperature': 0, 'max_tokens': 128})
+    response = request(args.base_url + '/v1/chat/completions', {'model': 'default', 'messages': messages, 'tools': [tool], 'tool_choice': 'required', 'parallel_tool_calls': False, 'temperature': 0, 'max_tokens': 128})
+    (run_dir / f'turn-{expected_turn:02d}.json').write_text(json.dumps(response, indent=2) + '\n')
     message = response['choices'][0]['message']
     calls = message.get('tool_calls') or []
     if len(calls) != 1 or calls[0].get('function', {}).get('name') != 'lookup':
