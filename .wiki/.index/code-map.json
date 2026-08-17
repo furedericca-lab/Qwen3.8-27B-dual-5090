@@ -1,0 +1,62 @@
+{
+  "AGENTS.md": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/decisions/deployment-baseline.md"
+    ],
+    "symbols": {}
+  },
+  "evidence/model.sha256": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/reference/model-metadata.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/benchmark-runtime.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/reference/vram-budget.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/build-llama.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/how-to/first-boot.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/inspect-model.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/how-to/first-boot.md",
+      ".wiki/reference/model-metadata.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/llama-server.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/decisions/deployment-baseline.md",
+      ".wiki/how-to/first-boot.md",
+      ".wiki/reference/vram-budget.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/preflight.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/debugging/host-integrity.md",
+      ".wiki/how-to/first-boot.md"
+    ],
+    "symbols": {}
+  }
+}

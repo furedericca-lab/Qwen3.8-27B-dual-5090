@@ -1,0 +1,7 @@
+llama.cpp/build/
+evidence/*
+!evidence/README.md
+!evidence/model.sha256
+__pycache__/
+*.pyc
+*.log

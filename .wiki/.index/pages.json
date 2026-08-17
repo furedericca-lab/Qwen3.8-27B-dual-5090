@@ -1,0 +1,111 @@
+[
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Host Integrity Formal benchmark and acceptance evidence requires a clean current boot: ```bash scripts/preflight.sh ``` It checks kernel taint, relevant kernel errors, NVIDIA state, RAM, and swap. `BAD_PAGE`, kernel Oops, general protection, page corruption, or NVIDIA Xid invalidates a run. An unrelated network-adapter `XID` is not an NVIDIA Xid. For a failed model run, preserve the process exit status and inspect VRAM, RAM, swap, and kernel logs before diagnosing OOM.",
+    "path": ".wiki/debugging/host-integrity.md",
+    "related_files": [
+      {
+        "path": "scripts/preflight.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-27b-dual-5090-deployment",
+    "search_text": "Host Integrity\ndebugging\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Host Integrity\", \"type\": \"debugging\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/preflight.sh\"], \"code_anchors\": [], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"kernel\", \"nvidia\", \"integrity\"], \"last_checked\": \"2026-08-17\", \"updated\": \"2026-08-17T15:15:00Z\"}\nscripts/preflight.sh related\n\n\n# Host Integrity\n\nFormal benchmark and acceptance evidence requires a clean current boot:\n\n```bash\nscripts/preflight.sh\n```\n\nIt checks kernel taint, relevant kernel errors, NVIDIA state, RAM, and swap. `BAD_PAGE`, kernel Oops, general protection, page corruption, or NVIDIA Xid invalidates a run. An unrelated network-adapter `XID` is not an NVIDIA Xid.\n\nFor a failed model run, preserve the process exit status and inspect VRAM, RAM, swap, and kernel logs before diagnosing OOM.\n",
+    "status": "current",
+    "title": "Host Integrity",
+    "type": "debugging"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Deployment Baseline The first runtime is a conservative 32K smoke. It uses the same F16 KV, single-slot, Flash Attention, direct-I/O, automatic two-GPU layer fitting, and 4096 MiB per-device fit margin intended for the later 128K baseline. Only `PROFILE=baseline` exists until benchmark evidence justifies an `agent` or `long` profile. The default 32K context prevents an unverified 128K claim. The production model is Q8_0 only. No conversion, quantization, MTP, CPU offload, vLLM route, or sam...",
+    "path": ".wiki/decisions/deployment-baseline.md",
+    "related_files": [
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      },
+      {
+        "path": "AGENTS.md",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-27b-dual-5090-deployment",
+    "search_text": "Deployment Baseline\ndecision\naccepted\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Deployment Baseline\", \"type\": \"decision\", \"status\": \"accepted\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/llama-server.sh\", \"AGENTS.md\"], \"code_anchors\": [], \"source_docs\": [\".scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md\"], \"tags\": [\"baseline\", \"llama-cpp\", \"runtime\"], \"decision_date\": \"2026-08-17\", \"last_checked\": \"2026-08-17\", \"updated\": \"2026-08-17T15:15:00Z\"}\nscripts/llama-server.sh related AGENTS.md related\n\n\n# Deployment Baseline\n\nThe first runtime is a conservative 32K smoke. It uses the same F16 KV, single-slot, Flash Attention, direct-I/O, automatic two-GPU layer fitting, and 4096 MiB per-device fit margin intended for the later 128K baseline.\n\nOnly `PROFILE=baseline` exists until benchmark evidence justifies an `agent` or `long` profile. The default 32K context prevents an unverified 128K claim.\n\nThe production model is Q8_0 only. No conversion, quantization, MTP, CPU offload, vLLM route, or sampler profile is part of this baseline.\n",
+    "status": "accepted",
+    "title": "Deployment Baseline",
+    "type": "decision"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# First Boot 1. Run `scripts/build-llama.sh`. 2. Run `scripts/inspect-model.sh` and confirm the recorded identity. 3. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure. 4. Start the 32K smoke with `scripts/llama-server.sh`. 5. Run `scripts/probe-basic.sh` from another terminal. 6. Record resource use and only then test `CONTEXT=131072 scripts/llama-server.sh`. The launcher has no MTP or CPU-offload option. Do not append ad-hoc arguments to it; test a change...",
+    "path": ".wiki/how-to/first-boot.md",
+    "related_files": [
+      {
+        "path": "scripts/build-llama.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/inspect-model.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/preflight.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-27b-dual-5090-deployment",
+    "search_text": "First Boot\nhow-to\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"First Boot\", \"type\": \"how-to\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/build-llama.sh\", \"scripts/inspect-model.sh\", \"scripts/preflight.sh\", \"scripts/llama-server.sh\"], \"code_anchors\": [], \"source_docs\": [\"README.md\", \"AGENTS.md\"], \"tags\": [\"first-boot\", \"llama-cpp\", \"validation\"], \"last_checked\": \"2026-08-17\", \"updated\": \"2026-08-17T15:15:00Z\"}\nscripts/build-llama.sh related scripts/inspect-model.sh related scripts/preflight.sh related scripts/llama-server.sh related\n\n\n# First Boot\n\n1. Run `scripts/build-llama.sh`.\n2. Run `scripts/inspect-model.sh` and confirm the recorded identity.\n3. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure.\n4. Start the 32K smoke with `scripts/llama-server.sh`.\n5. Run `scripts/probe-basic.sh` from another terminal.\n6. Record resource use and only then test `CONTEXT=131072 scripts/llama-server.sh`.\n\nThe launcher has no MTP or CPU-offload option. Do not append ad-hoc arguments to it; test a changed variable through an explicit, recorded candidate.\n",
+    "status": "current",
+    "title": "First Boot",
+    "type": "how-to"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Production Model Metadata Recorded on 2026-08-17 from the fixed artifact: ```text Path: /data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0.gguf Size: 28,595,754,496 bytes SHA256: 638be14a0062789de1bcc714dc04c3d108ff9c3db054a74aaf2f25cca321d7ca Architecture: qwen35 Name: Qwen38 Ara v5 Size label: 27B GGUF file type: 7 (Q8_0) Quantization version: 2 Blocks: 64 Native context: 262144 Embedding length: 5120 Attention heads: 24 KV heads: 4 Key/value length: 256 / 256 Full-attention interval:...",
+    "path": ".wiki/reference/model-metadata.md",
+    "related_files": [
+      {
+        "path": "scripts/inspect-model.sh",
+        "role": "related"
+      },
+      {
+        "path": "evidence/model.sha256",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-27b-dual-5090-deployment",
+    "search_text": "Production Model Metadata\nreference\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Production Model Metadata\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/inspect-model.sh\", \"evidence/model.sha256\"], \"code_anchors\": [], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"model\", \"gguf\", \"q8-0\"], \"last_checked\": \"2026-08-17\", \"updated\": \"2026-08-17T15:15:00Z\"}\nscripts/inspect-model.sh related evidence/model.sha256 related\n\n\n# Production Model Metadata\n\nRecorded on 2026-08-17 from the fixed artifact:\n\n```text\nPath: /data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0.gguf\nSize: 28,595,754,496 bytes\nSHA256: 638be14a0062789de1bcc714dc04c3d108ff9c3db054a74aaf2f25cca321d7ca\nArchitecture: qwen35\nName: Qwen38 Ara v5\nSize label: 27B\nGGUF file type: 7 (Q8_0)\nQuantization version: 2\nBlocks: 64\nNative context: 262144\nEmbedding length: 5120\nAttention heads: 24\nKV heads: 4\nKey/value length: 256 / 256\nFull-attention interval: 4\nTensor count: 851\nMTP tensors: 0\n```\n\nNo `nextn_predict_layers` metadata or MTP tensors were present. Chat-template behavior remains a runtime behavior-probe gate rather than a documented claim.\n",
+    "status": "current",
+    "title": "Production Model Metadata",
+    "type": "reference"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# VRAM Budget No Qwen3.6 memory numbers are reused here. The initial two-GPU fitting target is 4096 MiB on each RTX 5090 and must be evaluated using the minimum free VRAM after model load and workload setup: ```text min(GPU0 free, GPU1 free) ``` The order for capacity pressure is smaller ubatch, larger fit target, KV type, then lower context. CPU offload requires an explicit scope.",
+    "path": ".wiki/reference/vram-budget.md",
+    "related_files": [
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/benchmark-runtime.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-27b-dual-5090-deployment",
+    "search_text": "VRAM Budget\nreference\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"VRAM Budget\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/llama-server.sh\", \"scripts/benchmark-runtime.sh\"], \"code_anchors\": [], \"source_docs\": [\".scopes/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md\"], \"tags\": [\"vram\", \"fit-target\", \"dual-5090\"], \"last_checked\": \"2026-08-17\", \"updated\": \"2026-08-17T15:15:00Z\"}\nscripts/llama-server.sh related scripts/benchmark-runtime.sh related\n\n\n# VRAM Budget\n\nNo Qwen3.6 memory numbers are reused here. The initial two-GPU fitting target is 4096 MiB on each RTX 5090 and must be evaluated using the minimum free VRAM after model load and workload setup:\n\n```text\nmin(GPU0 free, GPU1 free)\n```\n\nThe order for capacity pressure is smaller ubatch, larger fit target, KV type, then lower context. CPU offload requires an explicit scope.\n",
+    "status": "current",
+    "title": "VRAM Budget",
+    "type": "reference"
+  }
+]
