@@ -3,7 +3,7 @@ set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 model_dir=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF
-expected_model="$model_dir/RVN-Q8_0.gguf"
+expected_model="$model_dir/RVN-Q8_0-mtp.gguf"
 
 if [[ -n ${MODEL:-} ]]; then
   model=$MODEL
@@ -21,7 +21,7 @@ test -f "$model" || { echo "FAIL: model does not exist: $model" >&2; exit 1; }
 
 sha256=$(sha256sum "$model" | awk '{print $1}')
 printf '%s  %s\n' "$sha256" "$model" | tee "$root/evidence/model.sha256"
-stat -c 'path=%n%nsize=%s%nmode=%a%nowner=%U:%G' "$model"
+stat -c 'path=%n size=%s mode=%a owner=%U:%G' "$model"
 
 PYTHONPATH="$root/llama.cpp/gguf-py${PYTHONPATH:+:$PYTHONPATH}" python3 - "$model" <<'PY'
 from gguf import GGUFReader
@@ -38,7 +38,17 @@ for key in keys:
 for key in sorted(reader.fields):
     if key.endswith(suffixes) or 'chat_template' in key:
         print(f'{key}={reader.fields[key].contents()!r}')
-mtp_tensors = sum('.mtp.' in tensor.name or tensor.name.startswith('mtp.') for tensor in reader.tensors)
+mtp_names = ('.mtp.', '.nextn.')
+mtp_prefixes = ('mtp.', 'nextn.')
+mtp_tensors = [
+    tensor for tensor in reader.tensors
+    if any(name in tensor.name for name in mtp_names)
+    or tensor.name.startswith(mtp_prefixes)
+]
 print(f'tensor_count={len(reader.tensors)}')
-print(f'mtp_tensor_count={mtp_tensors}')
+print(f'nextn_mtp_tensor_count={len(mtp_tensors)}')
+for tensor in mtp_tensors:
+    print(f'nextn_mtp_tensor name={tensor.name!r} shape={tensor.shape!r} type={tensor.tensor_type!s}')
+if not mtp_tensors:
+    raise SystemExit('FAIL: no MTP/NextN tensors found')
 PY

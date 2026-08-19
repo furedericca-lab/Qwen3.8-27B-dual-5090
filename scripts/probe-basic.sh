@@ -11,7 +11,7 @@ curl -fsS "$base_url/v1/models" | tee "$run_dir/models.json"
 
 probe() {
   local name=$1 prompt=$2
-  jq -n --arg prompt "$prompt" '{model:"default",messages:[{role:"user",content:$prompt}],temperature:0,max_tokens:256}' \
+  jq -n --arg prompt "$prompt" '{model:"default",messages:[{role:"user",content:$prompt}],temperature:0,max_tokens:256,chat_template_kwargs:{enable_thinking:false}}' \
     | curl -fsS "$base_url/v1/chat/completions" -H 'Content-Type: application/json' -d @- \
     | tee "$run_dir/$name.json"
 }

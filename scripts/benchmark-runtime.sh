@@ -3,7 +3,7 @@ set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 bench="$root/llama.cpp/build/bin/llama-bench"
-model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0.gguf
+model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
 run_dir="$root/evidence/benchmark-$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$run_dir"
 test -x "$bench" || { echo "missing llama-bench; run scripts/build-llama.sh" >&2; exit 1; }

@@ -8,8 +8,8 @@ related_files: [scripts/build-llama.sh, scripts/inspect-model.sh, scripts/prefli
 code_anchors: []
 source_docs: [README.md, AGENTS.md]
 tags: [first-boot, llama-cpp, validation]
-last_checked: 2026-08-17
-updated: 2026-08-17T15:30:00Z
+last_checked: 2026-08-19
+updated: 2026-08-19T13:06:00Z
 ---
 
 # First Boot
@@ -20,5 +20,7 @@ updated: 2026-08-17T15:30:00Z
 4. Reproduce the 32K smoke with `PROFILE=baseline scripts/llama-server.sh` when needed.
 5. Run `scripts/probe-basic.sh` from another terminal.
 6. Start the accepted production runtime with `PROFILE=agent scripts/llama-server.sh`.
+7. Run `python3 scripts/probe-long-context.py --target-tokens 131072`, `python3 scripts/soak-agent.py --turns 20`, and `python3 scripts/benchmark-server-mtp.py` before acceptance.
+8. Run `scripts/preflight.sh` again after the workload suite.
 
-The launcher has no MTP or CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments to it; test a changed variable through an explicit, recorded candidate.
+The launcher enables `draft-mtp` with draft depth 2 and has no CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments or alter speculative mode/depth without a separately validated production change.

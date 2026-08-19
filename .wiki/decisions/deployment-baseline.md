@@ -9,14 +9,14 @@ code_anchors: []
 source_docs: [.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md]
 tags: [baseline, llama-cpp, runtime]
 decision_date: 2026-08-17
-last_checked: 2026-08-17
-updated: 2026-08-17T15:30:00Z
+last_checked: 2026-08-19
+updated: 2026-08-19T13:06:00Z
 ---
 
 # Deployment Baseline
 
-The first runtime was a conservative 32K smoke. The accepted production `agent` profile is 128K and uses F16 KV, one slot, Flash Attention, direct I/O, automatic two-GPU layer fitting, and a 4096 MiB per-device fit margin.
+The accepted production `agent` profile is 128K and uses F16 KV, one slot, Flash Attention, direct I/O, automatic two-GPU layer fitting, a 4096 MiB per-device fit margin, and MTP speculative decoding.
 
-`PROFILE=agent` is the default after 128K retrieval, isolated PP/TG, and a 20-turn tool-call soak passed. `PROFILE=baseline` retains the 32K smoke configuration. A `long` profile remains undefined because no 256K candidate has been accepted.
+`PROFILE=agent` is the default after a 130,090-token retrieval within a 131,072-token slot, isolated PP/TG, a 20-turn tool-call soak, and MTP metric validation passed. `PROFILE=baseline` retains the 32K smoke configuration.
 
-The production model is Q8_0 only. The GGUF has no embedded chat template, so the launcher supplies the pinned upstream `models/templates/Qwen3.5-4B.jinja` template after a 128K tool-call A/B passed. No conversion, quantization, MTP, CPU offload, vLLM route, or sampler profile is part of this baseline.
+The production model is the Q8_0 MTP GGUF only. It has one NextN prediction layer and uses `draft-mtp` with draft depth 2 under layer split. The launcher supplies the pinned upstream `models/templates/Qwen3.5-4B.jinja` template. No conversion, quantization, CPU offload, vLLM route, tensor split, draft model, or ngram speculative mode is part of this baseline.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0.gguf
+model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
 fail=0
 
 findmnt -T "$model" -o TARGET,SOURCE,FSTYPE,OPTIONS

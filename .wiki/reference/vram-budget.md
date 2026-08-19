@@ -8,13 +8,13 @@ related_files: [scripts/llama-server.sh, scripts/benchmark-runtime.sh]
 code_anchors: []
 source_docs: [.scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-scope-milestones.md]
 tags: [vram, fit-target, dual-5090]
-last_checked: 2026-08-17
-updated: 2026-08-17T15:30:00Z
+last_checked: 2026-08-19
+updated: 2026-08-19T13:06:00Z
 ---
 
 # VRAM Budget
 
-No Qwen3.6 memory numbers are reused here. The accepted two-GPU fitting target is 4096 MiB on each RTX 5090. The 128K F16-KV server left approximately 14.3 GiB free on GPU0 and 13.6 GiB free on GPU1 after load. The isolated PP/TG benchmark retained in `evidence/benchmark-20260817T152536Z/` observed a 17,563 MiB / 16,632 MiB minimum-free pair at its smaller benchmark contexts.
+No Qwen3.6 memory numbers are reused here. The accepted two-GPU fitting target is 4096 MiB on each RTX 5090. The MTP 128K F16-KV server used 18,413 MiB on GPU0 and 19,633 MiB on GPU1 after the 128K retrieval. The isolated target-model PP/TG benchmark retained in `evidence/benchmark-20260819T130345Z/` used the same two-GPU layer layout. MTP adds the embedded NextN head but does not change the fixed fit margin.
 
 ```text
 min(GPU0 free, GPU1 free)
