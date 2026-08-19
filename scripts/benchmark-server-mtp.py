@@ -30,13 +30,14 @@ def metric_value(body, name):
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-url', default='http://127.0.0.1:8000')
 parser.add_argument('--runs', type=int, default=3)
+parser.add_argument('--run-dir')
 args = parser.parse_args()
 if args.runs < 2:
     raise SystemExit('--runs must be at least 2 so one warm-up can be excluded')
 
 root = pathlib.Path(__file__).resolve().parents[1]
-run_dir = root / 'evidence' / f'mtp-server-benchmark-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
-run_dir.mkdir(parents=True)
+run_dir = pathlib.Path(args.run_dir) if args.run_dir else root / 'evidence' / f'mtp-server-benchmark-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
+run_dir.mkdir(parents=True, exist_ok=bool(args.run_dir))
 (run_dir / 'gpu-before.csv').write_text(subprocess.check_output([
     'nvidia-smi', '--query-gpu=index,name,memory.used,memory.free,power.draw', '--format=csv,noheader'
 ], text=True))

@@ -14,7 +14,7 @@ tags:
   - decisions
   - deployment
 last_checked: 2026-08-17
-updated: 2026-08-19T13:12:05Z
+updated: 2026-08-19T13:54:04Z
 generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 ---
 
@@ -28,9 +28,15 @@ generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 
 
 
+
+
+
+
+
+
 <!-- BEGIN AUTO -->
-- Last rebuilt: 2026-08-19T13:12:05Z
-- Decision count: 1
+- Last rebuilt: 2026-08-19T13:54:04Z
+- Decision count: 2
 
 ## Draft Decisions
 
@@ -38,6 +44,7 @@ generated_by: /home/build/.codex/skills/wiki-note/scripts/wiki_note.py
 
 ## Accepted Decisions
 
+- 2026-08-19 | [Runtime Tuning Freeze](decisions/runtime-tuning-freeze.md) | scope: qwen38-runtime-tuning
 - 2026-08-17 | [Deployment Baseline](decisions/deployment-baseline.md) | scope: qwen38-27b-dual-5090-deployment
 
 ## Current Decisions

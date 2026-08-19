@@ -29,3 +29,15 @@ updated: 2026-08-19T13:06:00Z
 - Verified Qwen35 metadata, one NextN prediction layer, and four `blk.64.nextn.*` tensors.
 - Accepted canonical 128K layer-split `draft-mtp` with draft depth 2: basic probe, 130,090-token retrieval, 20-turn tool soak, server metrics, and post-run host-integrity gate passed.
 - Recorded MTP acceptance of 67.14% (4,719 accepted of 7,029 drafted) and measured 91.95-98.41 tok/s across the server workloads.
+
+## 2026-08-19T13:39:17Z [qwen38-runtime-tuning]
+
+- Summary: Pinned HF revision and LFS SHA; verify-only inspect.
+- Pages: .wiki/reference/hf-source.md
+- Verification: scripts/inspect-hf-source.sh
+
+## 2026-08-19T13:54:04Z [qwen38-runtime-tuning]
+
+- Summary: Recorded p-min and ubatch MTP candidate results; production defaults kept.
+- Pages: .wiki/reference/runtime-tuning-results.md
+- Verification: scripts/run-mtp-candidate.sh

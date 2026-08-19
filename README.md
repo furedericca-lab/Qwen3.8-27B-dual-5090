@@ -15,13 +15,15 @@ The sole production model remains outside Git at `/data/linux-fast/models/Qwen3.
 | Gate | Status |
 | --- | --- |
 | Repository and upstream pin | Ready |
-| Model identity | Pass: SHA256 frozen, mode 0444 |
+| Model identity | Pass: local SHA256 frozen, HF LFS SHA and size pinned, mode 0444 |
 | CUDA build | Pass |
 | 32K smoke | Pass |
 | MTP initialization | Pass: `draft-mtp`, n-max 2, layer split |
 | 128K agent baseline | Pass: F16 KV, 130,090-token retrieval |
 | Agent soak | Pass: 20 deterministic tool-call turns |
 | MTP server benchmark | Pass: 67.14% acceptance; 91.95-98.41 tok/s measured |
+| HF remote identity | Pass: revision `2aff31a0`, LFS SHA matches local |
+| p-min / ubatch sweep | Measured; production defaults remain fastest. See [tuning results](.wiki/reference/runtime-tuning-results.md) |
 
 ## Build
 
@@ -35,9 +37,13 @@ The script builds a Release CUDA binary for Blackwell (`120a`) and verifies the 
 
 ```bash
 scripts/inspect-model.sh
+scripts/inspect-hf-source.sh
+scripts/inspect-topology.sh
 scripts/preflight.sh
 scripts/llama-server.sh
 ```
+
+`inspect-model.sh` verifies `evidence/model.sha256` with `sha256sum -c` and does not rewrite it. `inspect-hf-source.sh` compares the pinned Hugging Face revision and LFS SHA against live resolve headers without hashing 29 GB. Preflight still skips the SHA scan.
 
 The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 128K F16-KV MTP agent profile and always binds to `127.0.0.1:8000`. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
 
@@ -78,4 +84,4 @@ Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 4096/4096,
 
 `--no-kv-offload` is intentionally absent because it moves KV to CPU RAM. `--fit-target` means residual per-GPU VRAM, not KV allocation.
 
-See [AGENTS.md](AGENTS.md), the [first boot guide](.wiki/how-to/first-boot.md), and [model metadata](.wiki/reference/model-metadata.md) before changing runtime parameters.
+See [AGENTS.md](AGENTS.md), the [first boot guide](.wiki/how-to/first-boot.md), [model metadata](.wiki/reference/model-metadata.md), [HF source pin](.wiki/reference/hf-source.md), and [dual-5090 topology](.wiki/reference/host-topology.md) before changing runtime parameters. Layer split does not double single-token TG; see [layer-split throughput](.wiki/concepts/layer-split-throughput.md).

@@ -2,6 +2,7 @@ llama.cpp/build/
 evidence/*
 !evidence/README.md
 !evidence/model.sha256
+!evidence/hf-source.txt
 __pycache__/
 *.pyc
 *.log

@@ -23,7 +23,7 @@ The sole production artifact is:
 /data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
 ```
 
-The model directory must be on the `/data/linux-fast` ext4 mount. Never copy, redownload, requantize, repack, modify, or add the GGUF to Git. Its verified identity and parsed metadata live in `evidence/model.sha256` and `.wiki/reference/model-metadata.md`.
+The model directory must be on the `/data/linux-fast` ext4 mount. Never copy, redownload, requantize, repack, modify, or add the GGUF to Git. Its verified identity and parsed metadata live in `evidence/model.sha256`, `evidence/hf-source.txt`, and `.wiki/reference/model-metadata.md`. `scripts/inspect-model.sh` must verify the frozen SHA with `sha256sum -c` and must not overwrite it. `scripts/inspect-hf-source.sh` is the remote provenance gate; do not hash 29 GB in `scripts/preflight.sh`.
 
 Routine launchers always use the absolute Q8_0 MTP path above.
 
@@ -31,7 +31,7 @@ Routine launchers always use the absolute Q8_0 MTP path above.
 
 `llama.cpp/` is the official `ggml-org/llama.cpp` submodule pinned by this repository's gitlink. Do not edit the submodule or pull it independently. Upgrade it only through a candidate build, basic probe, benchmark, agent soak, and a committed parent pin.
 
-`scripts/llama-server.sh` is the sole canonical server launcher. `agent` is the accepted production default: 128K, F16 KV, one slot, Flash Attention, GPU KV, two GPUs, layer split, and localhost. `baseline` is a fixed 32K smoke profile.
+`scripts/llama-server.sh` is the sole canonical server launcher. `agent` is the accepted production default: 128K, F16 KV, one slot, Flash Attention, GPU KV, two GPUs, layer split, and localhost. `baseline` is a fixed 32K smoke profile. Candidate A/B runs use `scripts/candidate-server.sh` / `scripts/run-mtp-candidate.sh` and must not edit production defaults in the same change.
 
 It uses `--load-mode dio`, `--fit on --fit-target 4096,4096`, and no CPU weight/KV offload. `--fit-target` is final free VRAM margin per GPU, not KV reservation: increasing it leaves more margin and may offload more weights. Do not add `--no-kv-offload`; GPU KV is llama.cpp's default.
 

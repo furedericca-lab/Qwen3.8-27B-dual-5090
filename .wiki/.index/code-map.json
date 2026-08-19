@@ -7,10 +7,20 @@
     ],
     "symbols": {}
   },
+  "evidence/hf-source.txt": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/reference/hf-source.md",
+      ".wiki/reference/model-metadata.md"
+    ],
+    "symbols": {}
+  },
   "evidence/model.sha256": {
     "anchors": [],
     "definition_pages": [],
     "pages": [
+      ".wiki/reference/hf-source.md",
       ".wiki/reference/model-metadata.md"
     ],
     "symbols": {}
@@ -31,6 +41,25 @@
     ],
     "symbols": {}
   },
+  "scripts/candidate-server.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/decisions/runtime-tuning-freeze.md",
+      ".wiki/reference/runtime-tuning-results.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/inspect-hf-source.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/how-to/first-boot.md",
+      ".wiki/reference/hf-source.md",
+      ".wiki/reference/model-metadata.md"
+    ],
+    "symbols": {}
+  },
   "scripts/inspect-model.sh": {
     "anchors": [],
     "definition_pages": [],
@@ -40,12 +69,25 @@
     ],
     "symbols": {}
   },
+  "scripts/inspect-topology.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/how-to/first-boot.md",
+      ".wiki/reference/host-topology.md"
+    ],
+    "symbols": {}
+  },
   "scripts/llama-server.sh": {
     "anchors": [],
     "definition_pages": [],
     "pages": [
+      ".wiki/concepts/layer-split-throughput.md",
       ".wiki/decisions/deployment-baseline.md",
+      ".wiki/decisions/runtime-tuning-freeze.md",
       ".wiki/how-to/first-boot.md",
+      ".wiki/reference/host-topology.md",
+      ".wiki/reference/runtime-tuning-results.md",
       ".wiki/reference/vram-budget.md"
     ],
     "symbols": {}
@@ -56,6 +98,14 @@
     "pages": [
       ".wiki/debugging/host-integrity.md",
       ".wiki/how-to/first-boot.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/run-mtp-candidate.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/reference/runtime-tuning-results.md"
     ],
     "symbols": {}
   }

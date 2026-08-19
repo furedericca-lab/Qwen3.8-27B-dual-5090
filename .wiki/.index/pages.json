@@ -2,6 +2,23 @@
   {
     "anchor_count": 0,
     "code_anchors": [],
+    "excerpt": "# Layer Split Throughput Production uses llama.cpp `--split-mode layer`: layers and KV are pipelined across GPUs. One decode token walks GPU0 layers, then GPU1 layers. It is not same-layer weight parallelism, so two 1792 GB/s 5090s do not become 3.5 TB/s for a single token. That is why the accepted dual-5090 MTP server result (~95 tok/s) sits next to the author dual RTX PRO 6000 Blackwell Q8_0 MTP number (~98 tok/s). The second 5090 is first a capacity card: Q8_0 MTP plus 128K F16 KV plus com...",
+    "path": ".wiki/concepts/layer-split-throughput.md",
+    "related_files": [
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-runtime-tuning",
+    "search_text": "Layer Split Throughput\nconcept\ncurrent\nqwen38-runtime-tuning\n{\"title\": \"Layer Split Throughput\", \"type\": \"concept\", \"status\": \"current\", \"scope\": \"qwen38-runtime-tuning\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/llama-server.sh\"], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"layer-split\", \"mtp\", \"throughput\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:36:51Z\"}\nscripts/llama-server.sh related\n\n\n# Layer Split Throughput\n\nProduction uses llama.cpp `--split-mode layer`: layers and KV are pipelined across GPUs. One decode token walks GPU0 layers, then GPU1 layers. It is not same-layer weight parallelism, so two 1792 GB/s 5090s do not become 3.5 TB/s for a single token.\n\nThat is why the accepted dual-5090 MTP server result (~95 tok/s) sits next to the author dual RTX PRO 6000 Blackwell Q8_0 MTP number (~98 tok/s). The second 5090 is first a capacity card: Q8_0 MTP plus 128K F16 KV plus compute buffers does not sit comfortably on one 32 GB device.\n\nDo not expect 150-200 tok/s from this dense-hybrid Q8_0 at one slot and layer split. On this host the inter-GPU path is PHB plus P2P `GNS`, and the load link stays PCIe gen5 **x8**. Tensor split remains out of scope. Measured 2026-08-19 MTP server candidates kept production `p-min 0` and `-ub 256` as the throughput winners; see `.wiki/reference/runtime-tuning-results.md`.\n",
+    "status": "current",
+    "title": "Layer Split Throughput",
+    "type": "concept"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
     "excerpt": "# Host Integrity Formal benchmark and acceptance evidence requires a clean current boot: ```bash scripts/preflight.sh ``` It checks kernel taint, relevant kernel errors, NVIDIA state, RAM, and swap. `BAD_PAGE`, kernel Oops, general protection, page corruption, or NVIDIA Xid invalidates a run. An unrelated network-adapter `XID` is not an NVIDIA Xid. For a failed model run, preserve the process exit status and inspect VRAM, RAM, swap, and kernel logs before diagnosing OOM.",
     "path": ".wiki/debugging/host-integrity.md",
     "related_files": [
@@ -32,7 +49,7 @@
       }
     ],
     "scope": "qwen38-27b-dual-5090-deployment",
-    "search_text": "Deployment Baseline\ndecision\naccepted\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Deployment Baseline\", \"type\": \"decision\", \"status\": \"accepted\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/llama-server.sh\", \"AGENTS.md\"], \"code_anchors\": [], \"source_docs\": [\".scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md\"], \"tags\": [\"baseline\", \"llama-cpp\", \"runtime\"], \"decision_date\": \"2026-08-17\", \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:06:00Z\"}\nscripts/llama-server.sh related AGENTS.md related\n\n\n# Deployment Baseline\n\nThe accepted production `agent` profile is 128K and uses F16 KV, one slot, Flash Attention, direct I/O, automatic two-GPU layer fitting, a 4096 MiB per-device fit margin, and MTP speculative decoding.\n\n`PROFILE=agent` is the default after a 130,090-token retrieval within a 131,072-token slot, isolated PP/TG, a 20-turn tool-call soak, and MTP metric validation passed. `PROFILE=baseline` retains the 32K smoke configuration.\n\nThe production model is the Q8_0 MTP GGUF only. It has one NextN prediction layer and uses `draft-mtp` with draft depth 2 under layer split. The launcher supplies the pinned upstream `models/templates/Qwen3.5-4B.jinja` template. No conversion, quantization, CPU offload, vLLM route, tensor split, draft model, or ngram speculative mode is part of this baseline.\n",
+    "search_text": "Deployment Baseline\ndecision\naccepted\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Deployment Baseline\", \"type\": \"decision\", \"status\": \"accepted\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\", \"qwen38-runtime-tuning\"], \"related_files\": [\"scripts/llama-server.sh\", \"AGENTS.md\"], \"code_anchors\": [], \"source_docs\": [\".scopes/archive/qwen38-27b-dual-5090-deployment/qwen38-27b-dual-5090-deployment-implementation-research-notes.md\"], \"tags\": [\"baseline\", \"llama-cpp\", \"runtime\"], \"decision_date\": \"2026-08-17\", \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:06:00Z\"}\nscripts/llama-server.sh related AGENTS.md related\n\n\n# Deployment Baseline\n\nThe accepted production `agent` profile is 128K and uses F16 KV, one slot, Flash Attention, direct I/O, automatic two-GPU layer fitting, a 4096 MiB per-device fit margin, and MTP speculative decoding.\n\n`PROFILE=agent` is the default after a 130,090-token retrieval within a 131,072-token slot, isolated PP/TG, a 20-turn tool-call soak, and MTP metric validation passed. `PROFILE=baseline` retains the 32K smoke configuration.\n\nThe production model is the Q8_0 MTP GGUF only. It has one NextN prediction layer and uses `draft-mtp` with draft depth 2 under layer split. The launcher supplies the pinned upstream `models/templates/Qwen3.5-4B.jinja` template. No conversion, quantization, CPU offload, vLLM route, tensor split, draft model, or ngram speculative mode is part of this baseline.\n\nRuntime knobs such as `--spec-draft-p-min` and ubatch remain production-frozen until a candidate run under `.scopes/qwen38-runtime-tuning` beats this baseline and a separate production-change scope promotes it. Dual-5090 layer split is a capacity/residency choice, not a 2x single-token bandwidth path.\n",
     "status": "accepted",
     "title": "Deployment Baseline",
     "type": "decision"
@@ -40,7 +57,28 @@
   {
     "anchor_count": 0,
     "code_anchors": [],
-    "excerpt": "# First Boot 1. Run `scripts/build-llama.sh`. 2. Run `scripts/inspect-model.sh` and confirm the recorded identity. 3. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure. 4. Reproduce the 32K smoke with `PROFILE=baseline scripts/llama-server.sh` when needed. 5. Run `scripts/probe-basic.sh` from another terminal. 6. Start the accepted production runtime with `PROFILE=agent scripts/llama-server.sh`. 7. Run `python3 scripts/probe-long-context.py --target-tokens...",
+    "excerpt": "# Runtime Tuning Freeze Keep `scripts/llama-server.sh` at the accepted 128K MTP agent profile. Candidate evidence from `.scopes/qwen38-runtime-tuning` did not beat that default on throughput. Measured 2026-08-19: `--spec-draft-p-min 0` remains fastest (~91/97/97 tok/s short/medium/long, 67.2% accept). Raising p-min to 0.60-0.75 increased acceptance (83-91%) and lowered tok/s; higher p-min also changed long-run completion length. `-ub 512` matched `-ub 256` on this decode-heavy MTP harness. n-...",
+    "path": ".wiki/decisions/runtime-tuning-freeze.md",
+    "related_files": [
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/candidate-server.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-runtime-tuning",
+    "search_text": "Runtime Tuning Freeze\ndecision\naccepted\nqwen38-runtime-tuning\n{\"title\": \"Runtime Tuning Freeze\", \"type\": \"decision\", \"status\": \"accepted\", \"scope\": \"qwen38-runtime-tuning\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/llama-server.sh\", \"scripts/candidate-server.sh\"], \"source_docs\": [\".scopes/qwen38-runtime-tuning/qwen38-runtime-tuning-implementation-research-notes.md\"], \"tags\": [\"tuning\", \"p-min\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:36:51Z\", \"decision_date\": \"2026-08-19\"}\nscripts/llama-server.sh related scripts/candidate-server.sh related\n\n\n# Runtime Tuning Freeze\n\nKeep `scripts/llama-server.sh` at the accepted 128K MTP agent profile. Candidate evidence from `.scopes/qwen38-runtime-tuning` did not beat that default on throughput.\n\nMeasured 2026-08-19: `--spec-draft-p-min 0` remains fastest (~91/97/97 tok/s short/medium/long, 67.2% accept). Raising p-min to 0.60-0.75 increased acceptance (83-91%) and lowered tok/s; higher p-min also changed long-run completion length. `-ub 512` matched `-ub 256` on this decode-heavy MTP harness. n-max=3, tensor split, and fit-target were not run.\n\nRejected: overwriting `evidence/model.sha256` on inspect; hashing 29 GB in preflight; promoting a slower p-min or an unmeasured PP-only ubatch change.\n",
+    "status": "accepted",
+    "title": "Runtime Tuning Freeze",
+    "type": "decision"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# First Boot 1. Run `scripts/build-llama.sh`. 2. Run `scripts/inspect-model.sh`; it must verify `evidence/model.sha256` and must not rewrite it. 3. Run `scripts/inspect-hf-source.sh` to confirm the pinned Hugging Face revision and LFS SHA still match the local GGUF. This does not hash 29 GB. 4. Run `scripts/inspect-topology.sh` when recording dual-GPU evidence. 5. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure. It does not scan the GGUF SHA. 6. Reproduce...",
     "path": ".wiki/how-to/first-boot.md",
     "related_files": [
       {
@@ -49,6 +87,14 @@
       },
       {
         "path": "scripts/inspect-model.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/inspect-hf-source.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/inspect-topology.sh",
         "role": "related"
       },
       {
@@ -61,10 +107,56 @@
       }
     ],
     "scope": "qwen38-27b-dual-5090-deployment",
-    "search_text": "First Boot\nhow-to\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"First Boot\", \"type\": \"how-to\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/build-llama.sh\", \"scripts/inspect-model.sh\", \"scripts/preflight.sh\", \"scripts/llama-server.sh\"], \"code_anchors\": [], \"source_docs\": [\"README.md\", \"AGENTS.md\"], \"tags\": [\"first-boot\", \"llama-cpp\", \"validation\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:06:00Z\"}\nscripts/build-llama.sh related scripts/inspect-model.sh related scripts/preflight.sh related scripts/llama-server.sh related\n\n\n# First Boot\n\n1. Run `scripts/build-llama.sh`.\n2. Run `scripts/inspect-model.sh` and confirm the recorded identity.\n3. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure.\n4. Reproduce the 32K smoke with `PROFILE=baseline scripts/llama-server.sh` when needed.\n5. Run `scripts/probe-basic.sh` from another terminal.\n6. Start the accepted production runtime with `PROFILE=agent scripts/llama-server.sh`.\n7. Run `python3 scripts/probe-long-context.py --target-tokens 131072`, `python3 scripts/soak-agent.py --turns 20`, and `python3 scripts/benchmark-server-mtp.py` before acceptance.\n8. Run `scripts/preflight.sh` again after the workload suite.\n\nThe launcher enables `draft-mtp` with draft depth 2 and has no CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments or alter speculative mode/depth without a separately validated production change.\n",
+    "search_text": "First Boot\nhow-to\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"First Boot\", \"type\": \"how-to\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\", \"qwen38-runtime-tuning\"], \"related_files\": [\"scripts/build-llama.sh\", \"scripts/inspect-model.sh\", \"scripts/inspect-hf-source.sh\", \"scripts/inspect-topology.sh\", \"scripts/preflight.sh\", \"scripts/llama-server.sh\"], \"code_anchors\": [], \"source_docs\": [\"README.md\", \"AGENTS.md\"], \"tags\": [\"first-boot\", \"llama-cpp\", \"validation\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T21:40:00Z\"}\nscripts/build-llama.sh related scripts/inspect-model.sh related scripts/inspect-hf-source.sh related scripts/inspect-topology.sh related scripts/preflight.sh related scripts/llama-server.sh related\n\n\n# First Boot\n\n1. Run `scripts/build-llama.sh`.\n2. Run `scripts/inspect-model.sh`; it must verify `evidence/model.sha256` and must not rewrite it.\n3. Run `scripts/inspect-hf-source.sh` to confirm the pinned Hugging Face revision and LFS SHA still match the local GGUF. This does not hash 29 GB.\n4. Run `scripts/inspect-topology.sh` when recording dual-GPU evidence.\n5. Run `scripts/preflight.sh`; do not continue from a boot with a host-integrity failure. It does not scan the GGUF SHA.\n6. Reproduce the 32K smoke with `PROFILE=baseline scripts/llama-server.sh` when needed.\n7. Run `scripts/probe-basic.sh` from another terminal.\n8. Start the accepted production runtime with `PROFILE=agent scripts/llama-server.sh`.\n9. Run `python3 scripts/probe-long-context.py --target-tokens 131072`, `python3 scripts/soak-agent.py --turns 20`, and `python3 scripts/benchmark-server-mtp.py` before acceptance.\n10. Run `scripts/preflight.sh` again after the workload suite.\n\nThe launcher enables `draft-mtp` with draft depth 2 and has no CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments or alter speculative mode/depth without a separately validated production change. Candidate knobs belong in `scripts/candidate-server.sh`, not the production launcher.\n",
     "status": "current",
     "title": "First Boot",
     "type": "how-to"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Hugging Face Source Pin The production GGUF is the Hugging Face LFS object `RVN-Q8_0-mtp.gguf` from `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF`. Identity is the file SHA, not whatever happens to be HEAD later. Pinned values live in `evidence/hf-source.txt`: - revision `2aff31a04896ab1f3716dde35f73d099ed0c08c5` - LFS SHA256 `5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748` - size `29047075232` bytes `scripts/inspect-hf-source.sh` HEAD-requests the pinned revi...",
+    "path": ".wiki/reference/hf-source.md",
+    "related_files": [
+      {
+        "path": "scripts/inspect-hf-source.sh",
+        "role": "related"
+      },
+      {
+        "path": "evidence/hf-source.txt",
+        "role": "related"
+      },
+      {
+        "path": "evidence/model.sha256",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-runtime-tuning",
+    "search_text": "Hugging Face Source Pin\nreference\ncurrent\nqwen38-runtime-tuning\n{\"title\": \"Hugging Face Source Pin\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-runtime-tuning\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/inspect-hf-source.sh\", \"evidence/hf-source.txt\", \"evidence/model.sha256\"], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"provenance\", \"huggingface\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:36:51Z\"}\nscripts/inspect-hf-source.sh related evidence/hf-source.txt related evidence/model.sha256 related\n\n\n# Hugging Face Source Pin\n\nThe production GGUF is the Hugging Face LFS object `RVN-Q8_0-mtp.gguf` from `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF`. Identity is the file SHA, not whatever happens to be HEAD later.\n\nPinned values live in `evidence/hf-source.txt`:\n\n- revision `2aff31a04896ab1f3716dde35f73d099ed0c08c5`\n- LFS SHA256 `5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748`\n- size `29047075232` bytes\n\n`scripts/inspect-hf-source.sh` HEAD-requests the pinned revision and current HEAD resolve URLs and compares `x-linked-etag` plus `x-linked-size` with that pin and with `evidence/model.sha256`. It must not rewrite the pin and must not hash 29 GB. A HEAD revision change with the same LFS SHA is a warning; a SHA or size mismatch is a failure.\n\nUse this gate for model inspection and release, not inside `scripts/preflight.sh`.\n",
+    "status": "current",
+    "title": "Hugging Face Source Pin",
+    "type": "reference"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Dual 5090 PCIe Topology Observed on this host: - GPU0 `0000:01:00.0`, GPU1 `0000:02:00.0` - `nvidia-smi topo -m` GPU0-GPU1 path: PHB (PCIe Host Bridge / CPU) - `nvidia-smi topo -p2p r`: GNS (GPU not supported) - Both cards advertise PCIe Generation max 5 / width max 16x, host max 5 - Idle current: Generation 1 / 8x - Under MTP candidate load: Generation 5 / 8x on both cards (`evidence/candidate-p-min-0p60-20260819T134206Z` and later runs) - No NVLink Generation idle-downclocks; link **width...",
+    "path": ".wiki/reference/host-topology.md",
+    "related_files": [
+      {
+        "path": "scripts/inspect-topology.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-runtime-tuning",
+    "search_text": "Dual 5090 PCIe Topology\nreference\ncurrent\nqwen38-runtime-tuning\n{\"title\": \"Dual 5090 PCIe Topology\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-runtime-tuning\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/inspect-topology.sh\", \"scripts/llama-server.sh\"], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"topology\", \"pcie\", \"p2p\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:36:51Z\"}\nscripts/inspect-topology.sh related scripts/llama-server.sh related\n\n\n# Dual 5090 PCIe Topology\n\nObserved on this host:\n\n- GPU0 `0000:01:00.0`, GPU1 `0000:02:00.0`\n- `nvidia-smi topo -m` GPU0-GPU1 path: PHB (PCIe Host Bridge / CPU)\n- `nvidia-smi topo -p2p r`: GNS (GPU not supported)\n- Both cards advertise PCIe Generation max 5 / width max 16x, host max 5\n- Idle current: Generation 1 / 8x\n- Under MTP candidate load: Generation 5 / 8x on both cards (`evidence/candidate-p-min-0p60-20260819T134206Z` and later runs)\n- No NVLink\n\nGeneration idle-downclocks; link **width stays 8x under load** even though the cap is 16x. That is a real host path, not only ASPM. GeForce 5090 P2P is not available here, so layer-split decode pays a CPU-bridged x8 hop between GPU0 and GPU1. That is expected and is not a reason to switch production to tensor split. Re-run `scripts/inspect-topology.sh` with dual-GPU evidence and compare load current width, not only idle gen.\n",
+    "status": "current",
+    "title": "Dual 5090 PCIe Topology",
+    "type": "reference"
   },
   {
     "anchor_count": 0,
@@ -77,14 +169,47 @@
         "role": "related"
       },
       {
+        "path": "scripts/inspect-hf-source.sh",
+        "role": "related"
+      },
+      {
         "path": "evidence/model.sha256",
+        "role": "related"
+      },
+      {
+        "path": "evidence/hf-source.txt",
         "role": "related"
       }
     ],
     "scope": "qwen38-27b-dual-5090-deployment",
-    "search_text": "Production Model Metadata\nreference\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Production Model Metadata\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/inspect-model.sh\", \"evidence/model.sha256\"], \"code_anchors\": [], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"model\", \"gguf\", \"q8-0\", \"mtp\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T13:06:00Z\"}\nscripts/inspect-model.sh related evidence/model.sha256 related\n\n\n# Production Model Metadata\n\nRecorded on 2026-08-19 from the fixed artifact:\n\n```text\nPath: /data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf\nSize: 29,047,075,232 bytes\nSHA256: 5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748\nMode: 0444\nArchitecture: qwen35\nName: Qwen38 Ara v5\nSize label: 27B\nGGUF file type: 7 (Q8_0)\nQuantization version: 2\nBlocks: 65\nNative context: 262144\nEmbedding length: 5120\nAttention heads: 24\nKV heads: 4\nKey/value length: 256 / 256\nFull-attention interval: 4\nNextN predict layers: 1\nTensor count: 866\nNextN/MTP tensors: 4\nNextN tensors: blk.64.nextn.eh_proj.weight [10240, 5120] Q8_0; blk.64.nextn.shared_head_norm.weight; blk.64.nextn.enorm.weight; blk.64.nextn.hnorm.weight\n```\n\nThe GGUF has no embedded chat template, so the canonical launcher supplies upstream `models/templates/Qwen3.5-4B.jinja`. The NextN tensors initialized `draft-mtp` successfully at 128K with draft depth 2; the 20-turn tool-call soak passed with `enable_thinking=false` for deterministic response content.\n",
+    "search_text": "Production Model Metadata\nreference\ncurrent\nqwen38-27b-dual-5090-deployment\n{\"title\": \"Production Model Metadata\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-27b-dual-5090-deployment\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\", \"qwen38-runtime-tuning\"], \"related_files\": [\"scripts/inspect-model.sh\", \"scripts/inspect-hf-source.sh\", \"evidence/model.sha256\", \"evidence/hf-source.txt\"], \"code_anchors\": [], \"source_docs\": [\"AGENTS.md\"], \"tags\": [\"model\", \"gguf\", \"q8-0\", \"mtp\", \"provenance\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T21:40:00Z\"}\nscripts/inspect-model.sh related scripts/inspect-hf-source.sh related evidence/model.sha256 related evidence/hf-source.txt related\n\n\n# Production Model Metadata\n\nRecorded on 2026-08-19 from the fixed artifact:\n\n```text\nPath: /data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf\nSize: 29,047,075,232 bytes\nSHA256: 5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748\nMode: 0444\nArchitecture: qwen35\nName: Qwen38 Ara v5\nSize label: 27B\nGGUF file type: 7 (Q8_0)\nQuantization version: 2\nBlocks: 65\nNative context: 262144\nEmbedding length: 5120\nAttention heads: 24\nKV heads: 4\nKey/value length: 256 / 256\nFull-attention interval: 4\nNextN predict layers: 1\nTensor count: 866\nNextN/MTP tensors: 4\nNextN tensors: blk.64.nextn.eh_proj.weight [10240, 5120] Q8_0; blk.64.nextn.shared_head_norm.weight; blk.64.nextn.enorm.weight; blk.64.nextn.hnorm.weight\n```\n\nHugging Face pin in `evidence/hf-source.txt`:\n\n```text\nrepo: 0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF\nfile: RVN-Q8_0-mtp.gguf\nrevision: 2aff31a04896ab1f3716dde35f73d099ed0c08c5\nLFS SHA256: 5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748\nsize: 29047075232\n```\n\n`scripts/inspect-model.sh` verifies the frozen local SHA and does not overwrite it. `scripts/inspect-hf-source.sh` compares live resolve headers (`x-linked-etag`, `x-linked-size`) with that pin and does not hash 29 GB. Preflight still only checks ext4 and mode 0444.\n\nThe GGUF has no embedded chat template, so the canonical launcher supplies upstream `models/templates/Qwen3.5-4B.jinja`. The NextN tensors initialized `draft-mtp` successfully at 128K with draft depth 2; the 20-turn tool-call soak passed with `enable_thinking=false` for deterministic response content.\n",
     "status": "current",
     "title": "Production Model Metadata",
+    "type": "reference"
+  },
+  {
+    "anchor_count": 0,
+    "code_anchors": [],
+    "excerpt": "# Runtime Tuning Results One-variable MTP server candidates on 2026-08-19, `PROFILE=agent`, n-max=2, layer split, llama.cpp `34af94cd9`, model SHA `5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748`. Means exclude the warm-up run. Long completions often stopped at EOS before 4096 tokens. ## p-min at n-max=2, ubatch 256 | p-min | evidence | short tok/s | medium tok/s | long tok/s | drafted | accepted | accept | | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | | 0 | `evide...",
+    "path": ".wiki/reference/runtime-tuning-results.md",
+    "related_files": [
+      {
+        "path": "scripts/run-mtp-candidate.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/candidate-server.sh",
+        "role": "related"
+      },
+      {
+        "path": "scripts/llama-server.sh",
+        "role": "related"
+      }
+    ],
+    "scope": "qwen38-runtime-tuning",
+    "search_text": "Runtime Tuning Results\nreference\ncurrent\nqwen38-runtime-tuning\n{\"title\": \"Runtime Tuning Results\", \"type\": \"reference\", \"status\": \"current\", \"scope\": \"qwen38-runtime-tuning\", \"related_scopes\": [\"qwen38-27b-dual-5090-deployment\"], \"related_files\": [\"scripts/run-mtp-candidate.sh\", \"scripts/candidate-server.sh\", \"scripts/llama-server.sh\"], \"code_anchors\": [], \"source_docs\": [\".scopes/qwen38-runtime-tuning/task-plans/4phases-checklist.md\"], \"tags\": [\"tuning\", \"p-min\", \"ubatch\", \"mtp\"], \"last_checked\": \"2026-08-19\", \"updated\": \"2026-08-19T14:00:00Z\"}\nscripts/run-mtp-candidate.sh related scripts/candidate-server.sh related scripts/llama-server.sh related\n\n\n# Runtime Tuning Results\n\nOne-variable MTP server candidates on 2026-08-19, `PROFILE=agent`, n-max=2, layer split, llama.cpp `34af94cd9`, model SHA `5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748`. Means exclude the warm-up run. Long completions often stopped at EOS before 4096 tokens.\n\n## p-min at n-max=2, ubatch 256\n\n| p-min | evidence | short tok/s | medium tok/s | long tok/s | drafted | accepted | accept |\n| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |\n| 0 | `evidence/candidate-p-min-0-20260819T134027Z` | 90.99 | 97.48 | 96.83 | 7023 | 4722 | 67.24% |\n| 0.60 | `evidence/candidate-p-min-0p60-20260819T134206Z` | 78.92 | 86.24 | 85.35 | 5197 | 4307 | 82.87% |\n| 0.70 | `evidence/candidate-p-min-0p70-20260819T134355Z` | 74.11 | 78.42 | 80.32 | 4982 | 4240 | 85.11% |\n| 0.75 | `evidence/candidate-p-min-0p75-20260819T134558Z` | 81.22 | 80.43 | 81.55 | 4730 | 4317 | 91.27% |\n\nThroughput winner: **p-min 0** (production omit/default). Higher p-min raised acceptance and lowered tok/s. Completions at p-min ≥ 0.60 also changed length versus the p-min 0 runs, so it is not a pure speed knob.\n\n## ubatch at p-min default 0\n\n| ubatch | evidence | short tok/s | medium tok/s | long tok/s | accept |\n| --- | --- | ---: | ---: | ---: | ---: |\n| 256 | `evidence/candidate-ubatch-256-20260819T134826Z` | 91.21 | 97.76 | 97.17 | 67.24% |\n| 512 | `evidence/candidate-ubatch-512-20260819T135005Z` | 90.83 | 97.50 | 96.82 | 67.24% |\n\nThis harness is decode-heavy (short prompts). It does not measure long-prompt prefill. Keep production `-ub 256`. Do not run fit-target for TG.\n\n## Production\n\n`scripts/llama-server.sh` is unchanged: omit `--spec-draft-p-min`, `-ub 256`, n-max 2, layer split.\n",
+    "status": "current",
+    "title": "Runtime Tuning Results",
     "type": "reference"
   },
   {
