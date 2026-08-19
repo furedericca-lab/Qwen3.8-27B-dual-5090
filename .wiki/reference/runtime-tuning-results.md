@@ -36,6 +36,31 @@ Throughput winner: **p-min 0** (production omit/default). Higher p-min raised ac
 
 This harness is decode-heavy (short prompts). It does not measure long-prompt prefill. Keep production `-ub 256`. Do not run fit-target for TG.
 
+## Long-prompt ubatch sweep
+
+| envelope | actual prompt | ub=128 tok/s | ub=256 tok/s | ub=512 tok/s |
+| --- | ---: | ---: | ---: | ---: |
+| 32K | 31758 | 2833.69 | **3889.23** | 3833.93 |
+| 64K | 64527 | 2585.87 | **3270.22** | 3213.02 |
+| 128K | 130065 | 2202.15 | **2359.25** | 2247.74 |
+
+Evidence: `evidence/ubatch-long-prompt-20260819T142649Z/`. All nine runs and
+the post-run preflight passed. Freeze `-ub 256`; ub=512 used more VRAM and was
+slower at every prompt length.
+
+## n-max=3 at ubatch 256
+
+| p-min | short tok/s | medium tok/s | long tok/s | accept | Evidence |
+| ---: | ---: | ---: | ---: | ---: | --- |
+| 0 | **98.30** | **103.81** | **103.23** | 55.45% | `evidence/candidate-p-min-0-20260819T144819Z/` |
+| 0.1 | 98.25 | 103.68 | 103.07 | 55.45% | `evidence/candidate-p-min-0p1-20260819T145000Z/` |
+| 0.5 | 87.42 | 93.39 | 95.33 | 66.92% | `evidence/candidate-p-min-0p5-20260819T145139Z/` |
+
+n-max=3,p-min=0 beat the n-max=2,p-min=0 baseline by 8.03%, 6.49%, and
+6.61%. Completion lengths and finish reasons matched the baseline. Its basic
+probe, 130090-token retrieval, 20-turn tool soak, and post-run preflight passed.
+
 ## Production
 
-`scripts/llama-server.sh` is unchanged: omit `--spec-draft-p-min`, `-ub 256`, n-max 2, layer split.
+`scripts/llama-server.sh` uses `-b 1024 -ub 256`, n-max 3, layer split, and
+omits `--spec-draft-p-min` (effective p-min 0).

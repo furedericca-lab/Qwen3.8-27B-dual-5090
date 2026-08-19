@@ -18,12 +18,12 @@ The sole production model remains outside Git at `/data/linux-fast/models/Qwen3.
 | Model identity | Pass: local SHA256 frozen, HF LFS SHA and size pinned, mode 0444 |
 | CUDA build | Pass |
 | 32K smoke | Pass |
-| MTP initialization | Pass: `draft-mtp`, n-max 2, layer split |
+| MTP initialization | Pass: `draft-mtp`, n-max 3, layer split |
 | 128K agent baseline | Pass: F16 KV, 130,090-token retrieval |
 | Agent soak | Pass: 20 deterministic tool-call turns |
-| MTP server benchmark | Pass: 67.14% acceptance; 91.95-98.41 tok/s measured |
+| MTP server benchmark | Pass: n-max 3, p-min 0; 98.30-103.81 tok/s measured |
 | HF remote identity | Pass: revision `2aff31a0`, LFS SHA matches local |
-| p-min / ubatch sweep | Measured; production defaults remain fastest. See [tuning results](.wiki/reference/runtime-tuning-results.md) |
+| p-min / ubatch / draft-depth sweep | Measured; accepted `-ub 256`, n-max 3, p-min 0. See [tuning results](.wiki/reference/runtime-tuning-results.md) |
 
 ## Build
 
@@ -79,7 +79,7 @@ The production runtime uses the MTP head embedded in the fixed GGUF:
 
 ```text
 Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 4096/4096,
-128K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 2, localhost-only.
+128K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, localhost-only.
 ```
 
 `--no-kv-offload` is intentionally absent because it moves KV to CPU RAM. `--fit-target` means residual per-GPU VRAM, not KV allocation.

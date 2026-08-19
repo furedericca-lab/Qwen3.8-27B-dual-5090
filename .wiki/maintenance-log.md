@@ -41,3 +41,9 @@ updated: 2026-08-19T13:06:00Z
 - Summary: Recorded p-min and ubatch MTP candidate results; production defaults kept.
 - Pages: .wiki/reference/runtime-tuning-results.md
 - Verification: scripts/run-mtp-candidate.sh
+
+## 2026-08-19T14:55:00Z [ubatch-and-mtp-n3]
+
+- Long-prompt PP selected `-b 1024 -ub 256`: +37.25%, +26.47%, and +7.13% versus ub=128 at the 32K, 64K, and 128K envelopes; ub=512 was slower and used more VRAM.
+- Draft depth 3 with p-min 0 improved short/medium/long TG by 8.03%, 6.49%, and 6.61% over the n=2 baseline while preserving completion lengths and finish reasons.
+- Promoted n-max 3 after basic responses, 130,090-token retrieval, 20-turn tool-call soak, and post-run host-integrity gate passed.

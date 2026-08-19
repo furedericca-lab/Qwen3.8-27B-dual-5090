@@ -7,6 +7,7 @@ value=${2:-}
 port=${PORT:-8000}
 base_url="http://127.0.0.1:$port"
 profile=${PROFILE:-agent}
+draft_n_max=${DRAFT_N_MAX:-3}
 
 [[ -n $changed && -n $value ]] || {
   echo "usage: scripts/run-mtp-candidate.sh <p-min|ubatch|fit-target> <value>" >&2
@@ -25,6 +26,7 @@ mkdir -p "$run_dir"
   printf 'changed_variable=%s\n' "$changed"
   printf 'value=%s\n' "$value"
   printf 'profile=%s\n' "$profile"
+  printf 'draft_n_max=%s\n' "$draft_n_max"
   printf 'model_sha256='
   awk 'NF && $1 !~ /^#/ {print $1; exit}' "$root/evidence/model.sha256"
   printf 'llama_cpp_sha='

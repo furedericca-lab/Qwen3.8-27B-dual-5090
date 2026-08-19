@@ -31,7 +31,7 @@ exec "$server" \
   -ub 256 \
   -fa on \
   --spec-type draft-mtp \
-  --spec-draft-n-max 2 \
+  --spec-draft-n-max 3 \
   --metrics \
   --chat-template-file "$root/llama.cpp/models/templates/Qwen3.5-4B.jinja" \
   --host 127.0.0.1 \

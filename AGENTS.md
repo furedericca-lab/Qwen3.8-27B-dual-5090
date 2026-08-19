@@ -35,7 +35,7 @@ Routine launchers always use the absolute Q8_0 MTP path above.
 
 It uses `--load-mode dio`, `--fit on --fit-target 4096,4096`, and no CPU weight/KV offload. `--fit-target` is final free VRAM margin per GPU, not KV reservation: increasing it leaves more margin and may offload more weights. Do not add `--no-kv-offload`; GPU KV is llama.cpp's default.
 
-The production GGUF has one NextN MTP layer (`blk.64.nextn.*`). MTP is mandatory in production: use `--spec-type draft-mtp --spec-draft-n-max 2`. Do not change the draft depth, use tensor split, or add a draft model/ngram mode without separate validation.
+The production GGUF has one NextN MTP layer (`blk.64.nextn.*`). MTP is mandatory in production: use `--spec-type draft-mtp --spec-draft-n-max 3`. Do not change the draft depth, use tensor split, or add a draft model/ngram mode without separate validation.
 
 ## Change Rules
 

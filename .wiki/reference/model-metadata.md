@@ -51,4 +51,4 @@ size: 29047075232
 
 `scripts/inspect-model.sh` verifies the frozen local SHA and does not overwrite it. `scripts/inspect-hf-source.sh` compares live resolve headers (`x-linked-etag`, `x-linked-size`) with that pin and does not hash 29 GB. Preflight still only checks ext4 and mode 0444.
 
-The GGUF has no embedded chat template, so the canonical launcher supplies upstream `models/templates/Qwen3.5-4B.jinja`. The NextN tensors initialized `draft-mtp` successfully at 128K with draft depth 2; the 20-turn tool-call soak passed with `enable_thinking=false` for deterministic response content.
+The GGUF has no embedded chat template, so the canonical launcher supplies upstream `models/templates/Qwen3.5-4B.jinja`. The NextN tensors initialized `draft-mtp` successfully at 128K with draft depth 3; the 130,090-token retrieval and 20-turn tool-call soak passed with `enable_thinking=false` for deterministic response content.

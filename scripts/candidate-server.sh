@@ -6,6 +6,7 @@ server="$root/llama.cpp/build/bin/llama-server"
 model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
 profile=${PROFILE:-agent}
 port=${PORT:-8000}
+draft_n_max=${DRAFT_N_MAX:-3}
 changed=${1:-}
 value=${2:-}
 
@@ -15,6 +16,7 @@ usage() {
 }
 
 [[ -n $changed && -n $value ]] || usage
+[[ $draft_n_max == 2 || $draft_n_max == 3 ]] || { echo "DRAFT_N_MAX must be 2 or 3" >&2; exit 1; }
 case "$profile" in
   baseline) context=32768 ;;
   agent) context=131072 ;;
@@ -61,7 +63,7 @@ exec "$server" \
   -ub "$ubatch" \
   -fa on \
   --spec-type draft-mtp \
-  --spec-draft-n-max 2 \
+  --spec-draft-n-max "$draft_n_max" \
   --metrics \
   --chat-template-file "$root/llama.cpp/models/templates/Qwen3.5-4B.jinja" \
   --host 127.0.0.1 \

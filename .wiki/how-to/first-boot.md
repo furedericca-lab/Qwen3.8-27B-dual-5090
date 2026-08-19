@@ -25,4 +25,4 @@ updated: 2026-08-19T21:40:00Z
 9. Run `python3 scripts/probe-long-context.py --target-tokens 131072`, `python3 scripts/soak-agent.py --turns 20`, and `python3 scripts/benchmark-server-mtp.py` before acceptance.
 10. Run `scripts/preflight.sh` again after the workload suite.
 
-The launcher enables `draft-mtp` with draft depth 2 and has no CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments or alter speculative mode/depth without a separately validated production change. Candidate knobs belong in `scripts/candidate-server.sh`, not the production launcher.
+The launcher enables `draft-mtp` with accepted draft depth 3 and has no CPU-offload option. Its context is fixed by profile. Do not append ad-hoc arguments or alter speculative mode/depth without a separately validated production change. Candidate knobs belong in `scripts/candidate-server.sh`, not the production launcher.
