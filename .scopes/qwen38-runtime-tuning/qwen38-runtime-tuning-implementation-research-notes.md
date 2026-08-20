@@ -58,4 +58,5 @@ Accepted MTP server evidence remains `082e391`: target-only TG128 52.68 tok/s; M
 
 - Idle PCIe current gen1/x8 is ASPM/power-management downclock; caps are gen5/x16. Load-time link state is recorded with candidate GPU snapshots, not treated as a wiring fault from idle dumps alone.
 - HF HEAD may move while the Q8_0 MTP LFS oid stays the same; file SHA mismatch is FAIL, revision drift with matching SHA is recorded, not auto-promoted.
+- Recalibrated 2026-08-20: HEAD `1962512c` replaced `RVN-Q8_0-mtp.gguf` (size +9024 bytes, new LFS SHA `ea310156...`). Pinned revision `2aff31a0` still matches local. Treat as identity drift, not a silent upgrade.
 - p-min may raise tok/s while lowering acceptance; promotion needs both throughput and soak, which this scope does not perform.

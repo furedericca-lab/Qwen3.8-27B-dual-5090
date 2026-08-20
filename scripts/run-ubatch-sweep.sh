@@ -22,7 +22,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 cat > "$test_dir/config.txt" <<EOF
-model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
+model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf
 server_context_tokens=131072
 batch=1024
 ubatches=128 256 512

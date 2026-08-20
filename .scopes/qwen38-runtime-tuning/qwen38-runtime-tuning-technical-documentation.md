@@ -45,7 +45,8 @@ Candidate: `scripts/run-mtp-candidate.sh p-min 0.60`. Stops any previous candida
 
 ## Observability and error handling
 
-- HF mismatch: FAIL with remote vs pinned SHA/size/revision.
+- Pinned-revision mismatch: FAIL with remote vs pinned SHA/size/revision.
+- HEAD filename SHA/size drift: FAIL with `hf_head_status=file-drift`; do not rewrite the pin.
 - Local SHA mismatch: FAIL; do not rewrite the expected hash.
 - Topology script is observational and exits 0 after writing evidence unless nvidia-smi fails or GPU count != 2.
 - Candidate harness records server log, preflight, GPU snapshots, and MTP summary.

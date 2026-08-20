@@ -14,7 +14,9 @@ updated: 2026-08-19T14:00:00Z
 
 # Runtime Tuning Results
 
-One-variable MTP server candidates on 2026-08-19, `PROFILE=agent`, n-max=2, layer split, llama.cpp `34af94cd9`, model SHA `5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748`. Means exclude the warm-up run. Long completions often stopped at EOS before 4096 tokens.
+These measurements used retired `RVN-Q8_0-mtp.gguf` (SHA `5d33641d...`). Production is now `RVN-Q8_0-multilingual-mtp.gguf` (SHA `3979ca0b...`); do not treat the tok/s below as multilingual-MTP evidence.
+
+One-variable MTP server candidates on 2026-08-19, `PROFILE=agent`, n-max=2, layer split, llama.cpp `34af94cd9`. Means exclude the warm-up run. Long completions often stopped at EOS before 4096 tokens.
 
 ## p-min at n-max=2, ubatch 256
 

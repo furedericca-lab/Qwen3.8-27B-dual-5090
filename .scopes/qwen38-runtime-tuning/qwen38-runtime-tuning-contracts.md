@@ -30,8 +30,9 @@ Rules:
 - `hf_lfs_sha256` must equal the SHA in `evidence/model.sha256`.
 - `hf_size_bytes` must equal `stat -c %s` of `local_path`.
 - Live resolve of `hf_pinned_revision`/`hf_file` must return the same SHA and size.
-- HEAD may differ in revision; if HEAD file SHA differs, FAIL.
+- HEAD may differ in revision; if HEAD file SHA differs, FAIL and keep the pin.
 - The inspect script must not rewrite pinned keys.
+- Recalibrated 2026-08-20: pinned revision still matches local SHA `5d33641d...` / size `29047075232`. HEAD `1962512c` replaced `RVN-Q8_0-mtp.gguf` with SHA `ea310156...` / size `29047084256`. `hf_head_status=file-drift` is FAIL, not a promotion.
 
 ## Candidate knobs
 
@@ -43,7 +44,7 @@ Allowed changed variables for `scripts/candidate-server.sh`:
 | ubatch | `-ub` | 256, 512 |
 | fit-target | `--fit-target` | deferred unless M2/M3 leave a clear next question |
 
-Exactly one changed variable per process. n-max remains 2. Split mode remains `layer`. Host remains `127.0.0.1`.
+Exactly one changed variable per process. Original candidate matrix used n-max 2. Production after later measured promotion is n-max 3 (`e6bf41c`). Split mode remains `layer`. Host remains `127.0.0.1`.
 
 ## Requirement Boundary Notes
 

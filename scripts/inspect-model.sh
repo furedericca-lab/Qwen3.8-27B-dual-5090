@@ -3,19 +3,9 @@ set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 model_dir=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF
-expected_model="$model_dir/RVN-Q8_0-mtp.gguf"
+expected_model="$model_dir/RVN-Q8_0-multilingual-mtp.gguf"
 hash_file="$root/evidence/model.sha256"
-
-if [[ -n ${MODEL:-} ]]; then
-  model=$MODEL
-else
-  mapfile -t candidates < <(find "$model_dir" -maxdepth 1 -type f -name '*Q8_0*.gguf' -printf '%p\n' | sort)
-  case ${#candidates[@]} in
-    0) echo "FAIL: no Q8_0 GGUF found in $model_dir" >&2; exit 1 ;;
-    1) model=${candidates[0]} ;;
-    *) printf 'FAIL: multiple Q8_0 GGUF candidates; set MODEL explicitly:\n%s\n' "${candidates[@]}" >&2; exit 1 ;;
-  esac
-fi
+model=${MODEL:-$expected_model}
 
 [[ $model == "$expected_model" ]] || { echo "FAIL: production model must be $expected_model" >&2; exit 1; }
 test -f "$model" || { echo "FAIL: model does not exist: $model" >&2; exit 1; }

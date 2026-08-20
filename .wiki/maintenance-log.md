@@ -47,3 +47,17 @@ updated: 2026-08-19T13:06:00Z
 - Long-prompt PP selected `-b 1024 -ub 256`: +37.25%, +26.47%, and +7.13% versus ub=128 at the 32K, 64K, and 128K envelopes; ub=512 was slower and used more VRAM.
 - Draft depth 3 with p-min 0 improved short/medium/long TG by 8.03%, 6.49%, and 6.61% over the n=2 baseline while preserving completion lengths and finish reasons.
 - Promoted n-max 3 after basic responses, 130,090-token retrieval, 20-turn tool-call soak, and post-run host-integrity gate passed.
+
+## 2026-08-20T13:50:48Z [qwen38-runtime-tuning]
+
+- Summary: Record HF HEAD RVN-Q8_0-mtp.gguf file-drift; keep pinned revision 2aff31a0; inspect-hf-source fails without rewriting the pin.
+- Pages: .wiki/reference/hf-source.md
+- Verification: scripts/inspect-hf-source.sh
+- Residual risk: HEAD SHA ea310156 size 29047084256 is not production; do not auto-promote.
+
+## 2026-08-20T14:43:00Z [qwen38-multilingual-mtp-identity]
+
+- Summary: Promote RVN-Q8_0-multilingual-mtp.gguf as production after HF LFS SHA match; lock 0444; keep previous Q8_0 MTP on disk retired.
+- Pages: .wiki/reference/hf-source.md
+- Verification: scripts/inspect-hf-source.sh && scripts/inspect-model.sh
+- Residual risk: 128K retrieval, 20-turn soak, and MTP server bench not yet re-run on SHA 3979ca0b.

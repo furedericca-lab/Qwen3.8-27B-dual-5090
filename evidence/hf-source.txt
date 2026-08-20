@@ -1,8 +1,8 @@
-# Pinned Hugging Face identity for the production Q8_0 MTP GGUF.
+# Pinned Hugging Face identity for the production Q8_0 multilingual MTP GGUF.
 # scripts/inspect-hf-source.sh verifies live headers against this file and must not rewrite it.
 hf_repo=0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF
-hf_file=RVN-Q8_0-mtp.gguf
-hf_pinned_revision=2aff31a04896ab1f3716dde35f73d099ed0c08c5
-hf_lfs_sha256=5d33641d47321dfbc6fd64ab927385f29b89af66bf5f7a61d5bb7af4d4c5b748
-hf_size_bytes=29047075232
-local_path=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf
+hf_file=RVN-Q8_0-multilingual-mtp.gguf
+hf_pinned_revision=1962512c7354d17e1cb761e3848d6c2226d176ad
+hf_lfs_sha256=3979ca0b400a091f60108906bd6a22907595e0dead3633bbda29b3400516f7bf
+hf_size_bytes=29047084512
+local_path=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf

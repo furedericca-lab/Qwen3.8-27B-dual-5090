@@ -33,6 +33,14 @@
     ],
     "symbols": {}
   },
+  "scripts/benchmark-ubatch-prefill.py": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/scopes/ubatch-long-prompt-sweep-20260819.md"
+    ],
+    "symbols": {}
+  },
   "scripts/build-llama.sh": {
     "anchors": [],
     "definition_pages": [],
@@ -46,7 +54,8 @@
     "definition_pages": [],
     "pages": [
       ".wiki/decisions/runtime-tuning-freeze.md",
-      ".wiki/reference/runtime-tuning-results.md"
+      ".wiki/reference/runtime-tuning-results.md",
+      ".wiki/scopes/mtp-n3-pmin-sweep-20260819.md"
     ],
     "symbols": {}
   },
@@ -88,7 +97,8 @@
       ".wiki/how-to/first-boot.md",
       ".wiki/reference/host-topology.md",
       ".wiki/reference/runtime-tuning-results.md",
-      ".wiki/reference/vram-budget.md"
+      ".wiki/reference/vram-budget.md",
+      ".wiki/scopes/mtp-n3-pmin-sweep-20260819.md"
     ],
     "symbols": {}
   },
@@ -106,6 +116,14 @@
     "definition_pages": [],
     "pages": [
       ".wiki/reference/runtime-tuning-results.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/run-ubatch-sweep.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/scopes/ubatch-long-prompt-sweep-20260819.md"
     ],
     "symbols": {}
   }

@@ -1,3 +1,17 @@
+---
+title: Qwen3.8 ubatch long-prompt prefill sweep
+type: implementation
+status: historical
+scope: qwen38-runtime-tuning
+related_scopes: [qwen38-27b-dual-5090-deployment]
+related_files: [scripts/run-ubatch-sweep.sh, scripts/benchmark-ubatch-prefill.py]
+code_anchors: []
+source_docs: [.wiki/reference/runtime-tuning-results.md]
+tags: [ubatch, prefill]
+last_checked: 2026-08-20
+updated: 2026-08-20T13:50:00Z
+---
+
 # T011: Qwen3.8 ubatch 长 Prompt 预填速度验证
 
 **Status:** Closed

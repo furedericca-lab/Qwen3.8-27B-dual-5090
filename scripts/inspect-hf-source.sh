@@ -94,18 +94,25 @@ if [[ $pinned_remote_size != "${pin[hf_size_bytes]}" ]]; then
   echo "FAIL: pinned revision remote size ${pinned_remote_size:-missing} != ${pin[hf_size_bytes]}" >&2
   fail=1
 fi
-if [[ $head_remote_sha != "${pin[hf_lfs_sha256]}" || $head_remote_size != "${pin[hf_size_bytes]}" ]]; then
+head_status=match
+if [[ $head_remote_sha == "${pin[hf_lfs_sha256]}" && $head_remote_size == "${pin[hf_size_bytes]}" ]]; then
+  if [[ $head_rev != "${pin[hf_pinned_revision]}" ]]; then
+    head_status=revision-only
+    echo "WARN: HF HEAD revision $head_rev differs from pin ${pin[hf_pinned_revision]}; file SHA still matches" >&2
+  fi
+else
+  head_status=file-drift
   echo "FAIL: HF HEAD file identity drifted from the pinned GGUF" >&2
+  echo "FAIL: keep evidence/hf-source.txt; do not auto-promote HEAD $head_rev SHA ${head_remote_sha:-missing} size ${head_remote_size:-missing}" >&2
   fail=1
 fi
-if [[ $head_rev != "${pin[hf_pinned_revision]}" ]]; then
-  echo "WARN: HF HEAD revision $head_rev differs from pin ${pin[hf_pinned_revision]}; file SHA still matches" >&2
-fi
+printf 'hf_head_status=%s\n' "$head_status"
 
 after=$(sha256sum "$pin_file")
 [[ $before == "$after" ]] || { echo "FAIL: $pin_file changed during inspect" >&2; exit 1; }
 
 if (( fail )); then
+  echo 'FAIL: HF source gate' >&2
   exit 1
 fi
 echo 'PASS: HF source matches frozen local GGUF'

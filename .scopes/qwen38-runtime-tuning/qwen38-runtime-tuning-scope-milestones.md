@@ -21,9 +21,9 @@ description: Scope milestones for qwen38-runtime-tuning.
 
 ## Decision Log
 
-- Production stays frozen: accepted baseline in `.wiki/decisions/deployment-baseline.md`.
-- Layer split remains the production split mode: pipelined, not 2x TG.
-- n-max stays 2 for all candidate runs in this scope.
+- Original production freeze held through `922171d` (p-min/ubatch candidates did not beat n-max=2).
+- Later measured n-max=3,p-min=0 win was promoted in `e6bf41c`; layer split remains production split mode.
+- This scope must not auto-promote the 2026-08-20 HF HEAD `RVN-Q8_0-mtp.gguf` replacement.
 
 ## Milestones
 
@@ -43,11 +43,13 @@ M1 blocks M2. M2 selects the p-min used by M3. M4 depends on M1-M3 evidence.
 - Tracked identity files are verify-only.
 - Topology interpretation is in wiki.
 - Candidate evidence exists under `evidence/` (gitignored run dirs).
-- Production launcher diff is empty, or a follow-up production-change scope is named.
+- Original launcher freeze recorded at `922171d`; follow-up production-change for n-max=3 is `e6bf41c`.
+- HF pin remains verify-only against revision `2aff31a0`; HEAD file drift stays FAIL.
 
 ## Escalation triggers
 
-- Remote LFS SHA != local frozen SHA.
+- Pinned-revision remote LFS SHA != local frozen SHA.
+- HEAD filename SHA drift without an identity-promotion scope.
 - Host integrity gate fails before a candidate run.
 - Candidate server CUDA lockup, Xid, or non-OOM crash.
 - A candidate appears faster but breaks tool-call soak; do not promote.

@@ -1,3 +1,17 @@
+---
+title: MTP n=3 p-min Sweep
+type: implementation
+status: historical
+scope: qwen38-runtime-tuning
+related_scopes: [qwen38-27b-dual-5090-deployment]
+related_files: [scripts/candidate-server.sh, scripts/llama-server.sh]
+code_anchors: []
+source_docs: [.wiki/reference/runtime-tuning-results.md]
+tags: [mtp, n-max, p-min]
+last_checked: 2026-08-20
+updated: 2026-08-20T13:50:00Z
+---
+
 # T012: MTP n=3 p-min Sweep
 
 **Status:** Closed

@@ -41,6 +41,13 @@ Input: `README.md`, `AGENTS.md`, `scripts/llama-server.sh`, `scripts/inspect-mod
 - Issues: none
 - Checkpoint: passed
 
+## Recalibration 2026-08-20
+
+- `scripts/inspect-model.sh` PASS; `evidence/model.sha256` unchanged.
+- `scripts/inspect-hf-source.sh` FAIL: `hf_head_status=file-drift` (HEAD `1962512c` SHA `ea310156...`, size `29047084256`). Pinned revision still matches local.
+- Production launcher remains n-max 3 from `e6bf41c`; this scope does not revert it.
+- Do not download or promote HEAD. Archive this scope only on request.
+
 ## Final release gate
 
-Production launcher unchanged. Identity verify-only. Topology and HF pin tracked. Candidate results recorded; no production promotion.
+Original four phases complete at `922171d`. Later n-max=3 promotion is `e6bf41c`. Identity remains verify-only. Residual: HF HEAD filename drift fails the inspect gate until a new identity scope.

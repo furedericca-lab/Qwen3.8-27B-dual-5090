@@ -8,21 +8,21 @@ Q8_0 with MTP
 2 x RTX 5090
 ```
 
-The sole production model remains outside Git at `/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-mtp.gguf`.
+The sole production model remains outside Git at `/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf`.
 
 ## Status
 
 | Gate | Status |
 | --- | --- |
 | Repository and upstream pin | Ready |
-| Model identity | Pass: local SHA256 frozen, HF LFS SHA and size pinned, mode 0444 |
+| Model identity | Pass: `RVN-Q8_0-multilingual-mtp.gguf`, SHA256 `3979ca0b...`, mode 0444 |
 | CUDA build | Pass |
 | 32K smoke | Pass |
 | MTP initialization | Pass: `draft-mtp`, n-max 3, layer split |
-| 128K agent baseline | Pass: F16 KV, 130,090-token retrieval |
-| Agent soak | Pass: 20 deterministic tool-call turns |
-| MTP server benchmark | Pass: n-max 3, p-min 0; 98.30-103.81 tok/s measured |
-| HF remote identity | Pass: revision `2aff31a0`, LFS SHA matches local |
+| 256K agent baseline | Pass on multilingual MTP: 261,160-token retrieval, `cobalt-73` |
+| Agent soak | Pass at 256K: 20 deterministic tool-call turns |
+| MTP server benchmark | Pass at 256K: n-max 3; 97.55-102.98 tok/s, 55.42% accept |
+| HF remote identity | Pass: revision `1962512c`, LFS SHA `3979ca0b...` matches local |
 | p-min / ubatch / draft-depth sweep | Measured; accepted `-ub 256`, n-max 3, p-min 0. See [tuning results](.wiki/reference/runtime-tuning-results.md) |
 
 ## Build
@@ -45,7 +45,7 @@ scripts/llama-server.sh
 
 `inspect-model.sh` verifies `evidence/model.sha256` with `sha256sum -c` and does not rewrite it. `inspect-hf-source.sh` compares the pinned Hugging Face revision and LFS SHA against live resolve headers without hashing 29 GB. Preflight still skips the SHA scan.
 
-The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 128K F16-KV MTP agent profile and always binds to `127.0.0.1:8000`. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
+The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile and always binds to `127.0.0.1:8000`. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
 
 ## Verification
 
@@ -53,7 +53,7 @@ With the server running:
 
 ```bash
 scripts/probe-basic.sh
-python3 scripts/probe-long-context.py --target-tokens 131072
+python3 scripts/probe-long-context.py --target-tokens 262144
 python3 scripts/soak-agent.py --turns 20
 python3 scripts/benchmark-server-mtp.py
 ```
@@ -79,7 +79,7 @@ The production runtime uses the MTP head embedded in the fixed GGUF:
 
 ```text
 Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 4096/4096,
-128K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, localhost-only.
+256K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, localhost-only.
 ```
 
 `--no-kv-offload` is intentionally absent because it moves KV to CPU RAM. `--fit-target` means residual per-GPU VRAM, not KV allocation.

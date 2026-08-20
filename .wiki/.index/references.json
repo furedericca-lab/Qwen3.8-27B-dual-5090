@@ -2,7 +2,9 @@
   ".wiki/reference/runtime-tuning-results.md": {
     "code_refs": [],
     "wiki_refs": [
-      ".wiki/concepts/layer-split-throughput.md"
+      ".wiki/concepts/layer-split-throughput.md",
+      ".wiki/scopes/mtp-n3-pmin-sweep-20260819.md",
+      ".wiki/scopes/ubatch-long-prompt-sweep-20260819.md"
     ]
   }
 }

@@ -10,7 +10,7 @@ profile=${PROFILE:-agent}
 draft_n_max=${DRAFT_N_MAX:-3}
 
 [[ -n $changed && -n $value ]] || {
-  echo "usage: scripts/run-mtp-candidate.sh <p-min|ubatch|fit-target> <value>" >&2
+  echo "usage: scripts/run-mtp-candidate.sh <p-min|ubatch|fit-target|context> <value>" >&2
   exit 2
 }
 
