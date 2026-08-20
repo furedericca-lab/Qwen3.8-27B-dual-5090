@@ -22,7 +22,7 @@ Layer split pipelines layers and KV across CUDA0/CUDA1. A single decode token wa
 
 ## Key constraints and non-goals
 
-- Production bind remains `127.0.0.1`.
+- Production systemd bind is `172.30.0.214`; candidate processes remain on `127.0.0.1`.
 - MTP remains `--spec-type draft-mtp --spec-draft-n-max 2`.
 - Do not add `--no-kv-offload`.
 - Do not hash the GGUF in preflight.
@@ -53,7 +53,7 @@ Candidate: `scripts/run-mtp-candidate.sh p-min 0.60`. Stops any previous candida
 
 ## Security model
 
-Localhost only. No tokens in `evidence/hf-source.txt`. HF queries use public API/resolve headers.
+The production service binds only to `172.30.0.214`; candidate services remain localhost-only. No tokens in `evidence/hf-source.txt`. HF queries use public API/resolve headers.
 
 ## Test strategy
 

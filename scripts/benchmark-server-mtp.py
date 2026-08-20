@@ -22,7 +22,7 @@ def metric_value(body, name):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--base-url', default='http://127.0.0.1:8000')
+parser.add_argument('--base-url', default='http://172.30.0.214:8000')
 parser.add_argument('--runs', type=int, default=3)
 parser.add_argument('--run-dir')
 args = parser.parse_args()

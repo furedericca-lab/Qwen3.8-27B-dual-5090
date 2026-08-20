@@ -10,7 +10,7 @@ from responses_api import output_items, request, require_completed
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--base-url', default='http://127.0.0.1:8000')
+parser.add_argument('--base-url', default='http://172.30.0.214:8000')
 parser.add_argument('--turns', type=int, choices=range(20, 51), default=20)
 args = parser.parse_args()
 

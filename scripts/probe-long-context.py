@@ -14,7 +14,7 @@ def token_count(base_url, content):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--base-url', default='http://127.0.0.1:8000')
+parser.add_argument('--base-url', default='http://172.30.0.214:8000')
 parser.add_argument('--target-tokens', type=int, default=32768, help='Server context to exercise. Must be between 32768 and 262144 inclusive.')
 parser.add_argument('--headroom-tokens', type=int, default=1024, help='Reserved chat framing and generation capacity.')
 args = parser.parse_args()

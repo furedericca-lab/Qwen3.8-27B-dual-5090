@@ -17,11 +17,12 @@ The canonical llama.cpp server already supports the OpenAI-compatible Responses 
 
 ## Outcome
 
-The repository's basic probe, long-context probe, MTP benchmark, prefill benchmark, and tool-call soak use `/v1/responses`. A tracked `systemd/qwen38-27b.service` unit calls the canonical launcher with the unchanged `agent` runtime profile and remains disabled unless the user explicitly enables it.
+The repository's basic probe, long-context probe, MTP benchmark, prefill benchmark, and tool-call soak use `/v1/responses`. A tracked `systemd/qwen38-27b.service` unit calls the canonical launcher with the unchanged `agent` runtime profile, binds only to `172.30.0.214`, and remains disabled unless the user explicitly enables it.
 
 ## Boundaries
 
-- Keep the model path, MTP settings, GPU split, context, fit target, and localhost bind unchanged.
+- Keep the model path, MTP settings, GPU split, context, and fit target unchanged.
+- Bind the production unit only to the explicitly authorized LAN address `172.30.0.214`; do not use `0.0.0.0`.
 - Keep Chat Completions available through llama.cpp for compatibility; this change selects Responses API for repository clients.
 - Do not start a second server while port `8000` is occupied.
 

@@ -8,6 +8,7 @@ Type=simple
 WorkingDirectory=/home/build/work/Qwen3.8-27B-dual-5090
 Environment=PROFILE=agent
 Environment=PORT=8000
+Environment=HOST=172.30.0.214
 ExecStart=/home/build/work/Qwen3.8-27B-dual-5090/scripts/llama-server.sh
 Restart=on-failure
 RestartSec=15s

@@ -45,11 +45,11 @@ scripts/llama-server.sh
 
 `inspect-model.sh` verifies `evidence/model.sha256` with `sha256sum -c` and does not rewrite it. `inspect-hf-source.sh` compares the pinned Hugging Face revision and LFS SHA against live resolve headers without hashing 29 GB. Preflight still skips the SHA scan.
 
-The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile and always binds to `127.0.0.1:8000`. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
+The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile; the direct launcher defaults to `127.0.0.1:8000`, while the installed systemd service sets `HOST=172.30.0.214` for LAN access. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
 
 ## API And Service Control
 
-The deployment clients use llama.cpp's OpenAI-compatible Responses API at `POST /v1/responses`. Responses are validated with `status=completed`, `output`, and `usage.input_tokens` / `usage.output_tokens`. llama.cpp also exposes `/v1/chat/completions` for compatibility, but it is not the production client contract in this repository.
+The deployment clients use llama.cpp's OpenAI-compatible Responses API at `POST http://172.30.0.214:8000/v1/responses`. Responses are validated with `status=completed`, `output`, and `usage.input_tokens` / `usage.output_tokens`. llama.cpp also exposes `/v1/chat/completions` for compatibility, but it is not the production client contract in this repository.
 
 Install the user-level service unit once:
 
@@ -66,7 +66,7 @@ systemctl --user status qwen38-27b.service
 journalctl --user -u qwen38-27b.service -f
 ```
 
-Do not start the unit while a manually launched `llama-server` already owns port `8000`; stop that process first. The unit is not enabled by default, so it will not load the 29 GB model at user login unless explicitly enabled.
+Do not start the unit while a manually launched `llama-server` already owns port `8000`; stop that process first. The unit is not enabled by default, so it will not load the 29 GB model at user login unless explicitly enabled. The production service listens only on `172.30.0.214`, not on all interfaces.
 
 ## Verification
 
@@ -100,7 +100,7 @@ The production runtime uses the MTP head embedded in the fixed GGUF:
 
 ```text
 Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 4096/4096,
-256K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, localhost-only.
+256K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, LAN bind `172.30.0.214`.
 ```
 
 `--no-kv-offload` is intentionally absent because it moves KV to CPU RAM. `--fit-target` means residual per-GPU VRAM, not KV allocation.

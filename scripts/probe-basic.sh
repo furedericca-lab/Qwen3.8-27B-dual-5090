@@ -2,7 +2,7 @@
 set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
-base_url=${BASE_URL:-http://127.0.0.1:8000}
+base_url=${BASE_URL:-http://172.30.0.214:8000}
 run_dir="$root/evidence/probe-basic-$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$run_dir"
 

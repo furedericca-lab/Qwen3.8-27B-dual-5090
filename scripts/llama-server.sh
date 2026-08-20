@@ -6,6 +6,7 @@ server="$root/llama.cpp/build/bin/llama-server"
 model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf
 profile=${PROFILE:-agent}
 port=${PORT:-8000}
+host=${HOST:-127.0.0.1}
 
 case "$profile" in
   baseline) context=32768 ;;
@@ -34,5 +35,5 @@ exec "$server" \
   --spec-draft-n-max 3 \
   --metrics \
   --chat-template-file "$root/llama.cpp/models/templates/Qwen3.5-4B.jinja" \
-  --host 127.0.0.1 \
+  --host "$host" \
   --port "$port"
