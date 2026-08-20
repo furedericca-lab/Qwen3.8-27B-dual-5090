@@ -1,0 +1,18 @@
+[Unit]
+Description=Qwen3.8-27B llama.cpp Responses API
+StartLimitIntervalSec=300s
+StartLimitBurst=3
+
+[Service]
+Type=simple
+WorkingDirectory=/home/build/work/Qwen3.8-27B-dual-5090
+Environment=PROFILE=agent
+Environment=PORT=8000
+ExecStart=/home/build/work/Qwen3.8-27B-dual-5090/scripts/llama-server.sh
+Restart=on-failure
+RestartSec=15s
+KillSignal=SIGTERM
+TimeoutStopSec=120s
+
+[Install]
+WantedBy=default.target

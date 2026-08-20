@@ -7,14 +7,8 @@ import pathlib
 import subprocess
 import threading
 import time
-import urllib.request
 
-
-def request(url, payload):
-    data = json.dumps(payload).encode()
-    req = urllib.request.Request(url, data, {"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=1800) as response:
-        return json.loads(response.read())
+from responses_api import request, require_completed
 
 
 def gpu_sampler(path, stop):
@@ -49,14 +43,15 @@ while current < args.target_tokens:
 
 payload = {
     "model": "default",
-    "messages": [{"role": "user", "content": prompt}],
+    "input": prompt,
     "temperature": 0,
-    "max_tokens": 1,
+    "max_output_tokens": 1,
+    "stream": False,
     "cache_prompt": False,
     "chat_template_kwargs": {"enable_thinking": False},
 }
 (args.run_dir / "request.json").write_text(
-    json.dumps({**payload, "messages": [{"role": "user", "content": f"<prompt with {current} raw tokens>"}]}, indent=2) + "\n"
+    json.dumps({**payload, "input": f"<prompt with {current} raw tokens>"}, indent=2) + "\n"
 )
 
 stop = threading.Event()
@@ -64,7 +59,10 @@ sampler = threading.Thread(target=gpu_sampler, args=(args.run_dir / "gpu-samples
 sampler.start()
 started = time.monotonic()
 try:
-    response = request(args.base_url + "/v1/chat/completions", payload)
+    response = require_completed(
+        request(args.base_url + "/v1/responses", payload),
+        "ubatch prefill",
+    )
 finally:
     elapsed = time.monotonic() - started
     stop.set()
@@ -73,10 +71,10 @@ finally:
 (args.run_dir / "response.json").write_text(json.dumps(response, indent=2) + "\n")
 usage = response.get("usage", {})
 timings = response.get("timings", {})
-finish_reason = response.get("choices", [{}])[0].get("finish_reason")
-if usage.get("prompt_tokens", 0) < args.target_tokens:
-    raise SystemExit(f"FAIL: prompt_tokens={usage.get('prompt_tokens', 0)} target={args.target_tokens}")
-if usage.get("completion_tokens", 0) < 1 or not finish_reason:
+response_status = response.get("status")
+if usage.get("input_tokens", 0) < args.target_tokens:
+    raise SystemExit(f"FAIL: input_tokens={usage.get('input_tokens', 0)} target={args.target_tokens}")
+if usage.get("output_tokens", 0) < 1 or response_status != "completed":
     raise SystemExit("FAIL: response did not contain a completed generation")
 
 peaks = {}
@@ -86,12 +84,12 @@ for line in (args.run_dir / "gpu-samples.csv").read_text().splitlines()[1:]:
 
 summary = {
     "target_prompt_tokens": args.target_tokens,
-    "actual_prompt_tokens": usage["prompt_tokens"],
+    "actual_input_tokens": usage["input_tokens"],
     "prompt_tokens_per_second": timings.get("prompt_per_second"),
     "server_prompt_ms": timings.get("prompt_ms"),
     "ttft_wall_ms": elapsed * 1000,
-    "completion_tokens": usage["completion_tokens"],
-    "finish_reason": finish_reason,
+    "output_tokens": usage["output_tokens"],
+    "response_status": response_status,
     "peak_gpu0_mib": peaks.get("0"),
     "peak_gpu1_mib": peaks.get("1"),
 }

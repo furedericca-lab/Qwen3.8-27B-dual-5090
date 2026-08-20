@@ -5,14 +5,8 @@ import argparse
 import json
 import pathlib
 import time
-import urllib.request
 
-
-def request(url, payload):
-    body = json.dumps(payload).encode()
-    req = urllib.request.Request(url, body, {'Content-Type': 'application/json'})
-    with urllib.request.urlopen(req, timeout=600) as response:
-        return json.loads(response.read())
+from responses_api import output_items, request, require_completed
 
 
 parser = argparse.ArgumentParser()
@@ -23,23 +17,23 @@ args = parser.parse_args()
 root = pathlib.Path(__file__).resolve().parents[1]
 run_dir = root / 'evidence' / f'agent-soak-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
 run_dir.mkdir(parents=True)
-messages = [{'role': 'user', 'content': 'Use lookup once per turn. Start with turn 1.'}]
-tool = {'type': 'function', 'function': {'name': 'lookup', 'description': 'Return a deterministic record.', 'parameters': {'type': 'object', 'properties': {'turn': {'type': 'integer'}}, 'required': ['turn']}}}
+input_items = [{'role': 'user', 'content': 'Use lookup once per turn. Start with turn 1.'}]
+tool = {'type': 'function', 'name': 'lookup', 'description': 'Return a deterministic record.', 'parameters': {'type': 'object', 'properties': {'turn': {'type': 'integer'}}, 'required': ['turn']}}
 history = []
 
 for expected_turn in range(1, args.turns + 1):
-    response = request(args.base_url + '/v1/chat/completions', {'model': 'default', 'messages': messages, 'tools': [tool], 'tool_choice': 'required', 'parallel_tool_calls': False, 'temperature': 0, 'max_tokens': 128, 'chat_template_kwargs': {'enable_thinking': False}})
+    response = require_completed(request(args.base_url + '/v1/responses', {'model': 'default', 'input': input_items, 'tools': [tool], 'tool_choice': 'required', 'parallel_tool_calls': False, 'temperature': 0, 'max_output_tokens': 128, 'stream': False, 'chat_template_kwargs': {'enable_thinking': False}}), f'tool turn {expected_turn}')
     (run_dir / f'turn-{expected_turn:02d}.json').write_text(json.dumps(response, indent=2) + '\n')
-    message = response['choices'][0]['message']
-    calls = message.get('tool_calls') or []
-    if len(calls) != 1 or calls[0].get('function', {}).get('name') != 'lookup':
+    calls = output_items(response, 'function_call')
+    if len(calls) != 1 or calls[0].get('name') != 'lookup':
         raise SystemExit(f'FAIL: turn {expected_turn} did not produce exactly one lookup call')
-    arguments = json.loads(calls[0]['function']['arguments'])
+    call = calls[0]
+    arguments = json.loads(call['arguments'])
     if arguments.get('turn') != expected_turn:
         raise SystemExit(f'FAIL: turn {expected_turn} arguments were {arguments!r}')
-    messages.append(message)
-    messages.append({'role': 'tool', 'tool_call_id': calls[0]['id'], 'content': json.dumps({'turn': expected_turn, 'status': 'ok'})})
-    messages.append({'role': 'user', 'content': f'Continue with lookup turn {expected_turn + 1}.'})
+    input_items.append({'type': 'function_call', 'call_id': call['call_id'], 'name': call['name'], 'arguments': call['arguments']})
+    input_items.append({'type': 'function_call_output', 'call_id': call['call_id'], 'output': json.dumps({'turn': expected_turn, 'status': 'ok'})})
+    input_items.append({'role': 'user', 'content': f'Continue with lookup turn {expected_turn + 1}.'})
     history.append(response)
 
 (run_dir / 'responses.json').write_text(json.dumps(history, indent=2) + '\n')

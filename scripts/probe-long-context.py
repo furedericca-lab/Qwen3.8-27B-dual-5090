@@ -5,14 +5,8 @@ import argparse
 import json
 import pathlib
 import time
-import urllib.request
 
-
-def request(url, payload):
-    body = json.dumps(payload).encode()
-    req = urllib.request.Request(url, body, {'Content-Type': 'application/json'})
-    with urllib.request.urlopen(req, timeout=1800) as response:
-        return json.loads(response.read())
+from responses_api import output_text, request, require_completed
 
 
 def token_count(base_url, content):
@@ -45,19 +39,19 @@ while current < prompt_target:
     prompt += filler * max(1, missing // filler_tokens)
     current = token_count(args.base_url, prompt)
 prompt += needle
-payload = {'model': 'default', 'messages': [{'role': 'user', 'content': prompt + '\nWhat is the verified deployment color? Reply with only the color.'}], 'temperature': 0, 'max_tokens': 256, 'chat_template_kwargs': {'enable_thinking': False}}
-result = request(args.base_url + '/v1/chat/completions', payload)
+payload = {'model': 'default', 'input': prompt + '\nWhat is the verified deployment color? Reply with only the color.', 'temperature': 0, 'max_output_tokens': 256, 'stream': False, 'chat_template_kwargs': {'enable_thinking': False}}
+result = require_completed(request(args.base_url + '/v1/responses', payload), 'long-context')
 (run_dir / 'response.json').write_text(json.dumps(result, indent=2) + '\n')
 usage = result.get('usage', {})
-content = result['choices'][0]['message'].get('content') or ''
-if usage.get('prompt_tokens', 0) < prompt_target:
-    raise SystemExit(f'FAIL: prompt used {usage.get("prompt_tokens", 0)} tokens, below target {prompt_target}')
+content = output_text(result)
+if usage.get('input_tokens', 0) < prompt_target:
+    raise SystemExit(f'FAIL: input used {usage.get("input_tokens", 0)} tokens, below target {prompt_target}')
 if 'cobalt-73' not in content.lower():
     raise SystemExit('FAIL: needle retrieval failed')
 (run_dir / 'summary.json').write_text(json.dumps({
     'server_context_tokens': args.target_tokens,
     'reserved_headroom_tokens': args.headroom_tokens,
     'prompt_target_tokens': prompt_target,
-    'actual_prompt_tokens': usage['prompt_tokens'],
+    'actual_input_tokens': usage['input_tokens'],
 }) + '\n')
-print(f'PASS: context={args.target_tokens} prompt={usage["prompt_tokens"]} headroom={args.headroom_tokens} retained in {run_dir}')
+print(f'PASS: context={args.target_tokens} input={usage["input_tokens"]} headroom={args.headroom_tokens} retained in {run_dir}')

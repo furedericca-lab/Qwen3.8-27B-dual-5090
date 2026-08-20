@@ -8,18 +8,12 @@ import pathlib
 import re
 import subprocess
 import time
-import urllib.request
 
-
-def request(url, payload=None):
-    data = None if payload is None else json.dumps(payload).encode()
-    req = urllib.request.Request(url, data, {'Content-Type': 'application/json'})
-    with urllib.request.urlopen(req, timeout=1800) as response:
-        return response.read().decode()
+from responses_api import request, request_text, require_completed
 
 
 def metrics(base_url):
-    return request(base_url + '/metrics')
+    return request_text(base_url + '/metrics')
 
 
 def metric_value(body, name):
@@ -66,23 +60,27 @@ for name, max_tokens in workloads.items():
     for number in range(1, args.runs + 1):
         payload = {
             'model': 'default',
-            'messages': [{'role': 'user', 'content': 'Write a precise technical explanation of deterministic software validation.'}],
+            'input': 'Write a precise technical explanation of deterministic software validation.',
             'temperature': 0,
-            'max_tokens': max_tokens,
+            'max_output_tokens': max_tokens,
+            'stream': False,
             'chat_template_kwargs': {'enable_thinking': False},
         }
         started = time.monotonic()
-        response = json.loads(request(args.base_url + '/v1/chat/completions', payload))
+        response = require_completed(
+            request(args.base_url + '/v1/responses', payload),
+            f'{name} run {number}',
+        )
         elapsed = time.monotonic() - started
         usage = response.get('usage', {})
-        tokens = usage.get('completion_tokens', 0)
+        tokens = usage.get('output_tokens', 0)
         if tokens <= 0:
             raise SystemExit(f'FAIL: {name} run {number} returned no completion tokens')
         sample = {
             'run': number,
-            'completion_tokens': tokens,
+            'output_tokens': tokens,
             'elapsed_seconds': elapsed,
-            'completion_tokens_per_second': tokens / elapsed,
+            'output_tokens_per_second': tokens / elapsed,
             'response': response,
         }
         samples.append(sample)
@@ -92,7 +90,7 @@ for name, max_tokens in workloads.items():
         'workload': name,
         'requested_max_tokens': max_tokens,
         'measured_runs': len(measured),
-        'mean_completion_tokens_per_second': sum(s['completion_tokens_per_second'] for s in measured) / len(measured),
+        'mean_output_tokens_per_second': sum(s['output_tokens_per_second'] for s in measured) / len(measured),
         'samples': [{key: value for key, value in s.items() if key != 'response'} for s in samples],
     })
 

@@ -47,6 +47,27 @@ scripts/llama-server.sh
 
 The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile and always binds to `127.0.0.1:8000`. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
 
+## API And Service Control
+
+The deployment clients use llama.cpp's OpenAI-compatible Responses API at `POST /v1/responses`. Responses are validated with `status=completed`, `output`, and `usage.input_tokens` / `usage.output_tokens`. llama.cpp also exposes `/v1/chat/completions` for compatibility, but it is not the production client contract in this repository.
+
+Install the user-level service unit once:
+
+```bash
+scripts/install-user-service.sh
+```
+
+The installer does not start or enable the service. Use these commands for the 256K production profile:
+
+```bash
+systemctl --user start qwen38-27b.service
+systemctl --user stop qwen38-27b.service
+systemctl --user status qwen38-27b.service
+journalctl --user -u qwen38-27b.service -f
+```
+
+Do not start the unit while a manually launched `llama-server` already owns port `8000`; stop that process first. The unit is not enabled by default, so it will not load the 29 GB model at user login unless explicitly enabled.
+
 ## Verification
 
 With the server running:

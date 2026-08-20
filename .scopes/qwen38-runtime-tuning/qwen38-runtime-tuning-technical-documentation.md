@@ -35,7 +35,7 @@ Inherited from research notes: verify-only identity, candidate-only sweeps, topo
 
 - `evidence/model.sha256`: `sha256sum` check file with absolute model path.
 - `evidence/hf-source.txt`: `key=value` pin consumed by `inspect-hf-source.sh`.
-- Candidate runs: HTTP `127.0.0.1:8000` `/health`, `/metrics`, `/v1/chat/completions`.
+- Candidate runs: HTTP `127.0.0.1:8000` `/health`, `/metrics`, `/v1/responses`.
 
 ## Operational behavior
 
