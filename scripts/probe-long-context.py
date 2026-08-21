@@ -17,6 +17,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--base-url', default='http://172.30.0.214:8000')
 parser.add_argument('--target-tokens', type=int, default=32768, help='Server context to exercise. Must be between 32768 and 262144 inclusive.')
 parser.add_argument('--headroom-tokens', type=int, default=1024, help='Reserved chat framing and generation capacity.')
+parser.add_argument('--run-dir')
 args = parser.parse_args()
 if args.target_tokens < 32768 or args.target_tokens > 262144:
     raise SystemExit('--target-tokens must be between 32768 and 262144')
@@ -26,8 +27,8 @@ if args.headroom_tokens < 256 or args.headroom_tokens >= args.target_tokens:
 prompt_target = args.target_tokens - args.headroom_tokens
 
 root = pathlib.Path(__file__).resolve().parents[1]
-run_dir = root / 'evidence' / f'long-context-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
-run_dir.mkdir(parents=True)
+run_dir = pathlib.Path(args.run_dir) if args.run_dir else root / 'evidence' / f'long-context-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
+run_dir.mkdir(parents=True, exist_ok=bool(args.run_dir))
 needle = 'NEEDLE: the verified deployment color is cobalt-73.'
 filler = 'Document segment confirms independent context handling and deterministic retrieval. '
 filler_tokens = max(1, token_count(args.base_url, filler))

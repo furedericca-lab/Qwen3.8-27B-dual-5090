@@ -35,7 +35,7 @@ cleanup() {
 trap cleanup EXIT
 
 "$bench" -m "$model" --load-mode dio -dev CUDA0/CUDA1 -sm layer \
-  --fit-target 4096 -ctk f16 -ctv f16 -fa on \
+  --fit-target 2048 -ctk f16 -ctv f16 -fa on \
   -p 512,4096,32768 -n 128 -b 1024 -ub 256 -o jsonl | tee "$run_dir/llama-bench.jsonl"
 
 cleanup

@@ -14,7 +14,7 @@ description: Verify downloaded RVN-Q8_0-multilingual-mtp.gguf against HF, lock m
 
 - Local file `/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf` size `29047084512`.
 - Local SHA256 `3979ca0b400a091f60108906bd6a22907595e0dead3633bbda29b3400516f7bf`.
-- HF resolve of revision `1962512c7354d17e1cb761e3848d6c2226d176ad` / `RVN-Q8_0-multilingual-mtp.gguf` returns `x-linked-etag` `3979ca0b...` and `x-linked-size` `29047084512`.
+- The original identity run used HF revision `1962512c7354d17e1cb761e3848d6c2226d176ad` for `RVN-Q8_0-multilingual-mtp.gguf`; the production pin was later advanced to `20b94f0613b632b4848bbe3b1e05d9ee0c2b1608` after the file SHA and size remained unchanged.
 - GGUF metadata: qwen35, Q8_0, 65 blocks, one NextN layer, four `blk.64.nextn.*` tensors.
 - After `sudo chmod 0444`, mode is `444`, owner `root:build`.
 

@@ -23,6 +23,8 @@ The sole production model remains outside Git at `/data/linux-fast/models/Qwen3.
 | Agent soak | Pass at 256K: 20 deterministic tool-call turns |
 | MTP server benchmark | Pass at 256K: n-max 3; 97.55-102.98 tok/s, 55.42% accept |
 | HF remote identity | Pass: revision `1962512c`, LFS SHA `3979ca0b...` matches local |
+| Auxiliary identity | Pass: pinned mmproj and HF template, both mode 0444 |
+| Vision mmproj scope | Pass: 32K and 256K mmproj/HF-template gates; see `.scopes/qwen38-vision-mmproj/` |
 | p-min / ubatch / draft-depth sweep | Measured; accepted `-ub 256`, n-max 3, p-min 0. See [tuning results](.wiki/reference/runtime-tuning-results.md) |
 
 ## Build
@@ -45,7 +47,7 @@ scripts/llama-server.sh
 
 `inspect-model.sh` verifies `evidence/model.sha256` with `sha256sum -c` and does not rewrite it. `inspect-hf-source.sh` compares the pinned Hugging Face revision and LFS SHA against live resolve headers without hashing 29 GB. Preflight still skips the SHA scan.
 
-The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile; the direct launcher defaults to `127.0.0.1:8000`, while the installed systemd service sets `HOST=172.30.0.214` for LAN access. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
+The canonical production command is `PROFILE=agent scripts/llama-server.sh`. It starts the accepted 256K F16-KV MTP agent profile with the pinned GPU-offloaded mmproj and HF chat template; the direct launcher defaults to `127.0.0.1:8000`, while the installed systemd service sets `HOST=172.30.0.214` for LAN access. Use `PROFILE=baseline` only to reproduce the 32K smoke. Context is fixed by the selected profile.
 
 ## API And Service Control
 
@@ -99,10 +101,14 @@ The benchmark reported `CUDA0/CUDA1`; its preflight and post-run host gate passe
 The production runtime uses the MTP head embedded in the fixed GGUF:
 
 ```text
-Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 4096/4096,
+Q8_0 MTP model, DIO, CUDA0+CUDA1, layer split, fit target 2048/2048,
 256K F16 KV, Flash Attention, single parallel slot, draft-mtp n-max 3, LAN bind `172.30.0.214`.
 ```
 
 `--no-kv-offload` is intentionally absent because it moves KV to CPU RAM. `--fit-target` means residual per-GPU VRAM, not KV allocation.
+
+The pinned vision artifacts were promoted after `.scopes/qwen38-vision-mmproj/`
+passed its template, 32K vision, MTP, and 256K acceptance gates. Candidate
+vision runs use port `8001` on localhost and must stop the formal service first.
 
 See [AGENTS.md](AGENTS.md), the [first boot guide](.wiki/how-to/first-boot.md), [model metadata](.wiki/reference/model-metadata.md), [HF source pin](.wiki/reference/hf-source.md), and [dual-5090 topology](.wiki/reference/host-topology.md) before changing runtime parameters. Layer split does not double single-token TG; see [layer-split throughput](.wiki/concepts/layer-split-throughput.md).

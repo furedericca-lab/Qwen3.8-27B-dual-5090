@@ -53,8 +53,10 @@
     "anchors": [],
     "definition_pages": [],
     "pages": [
+      ".wiki/decisions/deployment-baseline.md",
       ".wiki/decisions/runtime-tuning-freeze.md",
       ".wiki/reference/runtime-tuning-results.md",
+      ".wiki/reference/vram-budget.md",
       ".wiki/scopes/mtp-n3-pmin-sweep-20260819.md"
     ],
     "symbols": {}
@@ -96,6 +98,7 @@
       ".wiki/decisions/runtime-tuning-freeze.md",
       ".wiki/how-to/first-boot.md",
       ".wiki/reference/host-topology.md",
+      ".wiki/reference/model-metadata.md",
       ".wiki/reference/runtime-tuning-results.md",
       ".wiki/reference/vram-budget.md",
       ".wiki/scopes/mtp-n3-pmin-sweep-20260819.md"
@@ -108,6 +111,14 @@
     "pages": [
       ".wiki/debugging/host-integrity.md",
       ".wiki/how-to/first-boot.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/probe-vision.py": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/decisions/deployment-baseline.md"
     ],
     "symbols": {}
   },
@@ -124,6 +135,14 @@
     "definition_pages": [],
     "pages": [
       ".wiki/scopes/ubatch-long-prompt-sweep-20260819.md"
+    ],
+    "symbols": {}
+  },
+  "scripts/run-vision-candidate.sh": {
+    "anchors": [],
+    "definition_pages": [],
+    "pages": [
+      ".wiki/decisions/deployment-baseline.md"
     ],
     "symbols": {}
   }

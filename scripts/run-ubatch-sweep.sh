@@ -28,9 +28,9 @@ batch=1024
 ubatches=128 256 512
 prompt_contexts=32768 65536 131072
 prompt_headroom_tokens=1024
-fit_target=4096,4096
+fit_target=2048,2048
 load_mode=dio
-mtp_draft_n_max=2
+mtp_draft_n_max=3
 EOF
 
 for context in "${contexts[@]}"; do

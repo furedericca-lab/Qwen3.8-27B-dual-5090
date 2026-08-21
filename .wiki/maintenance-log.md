@@ -67,3 +67,17 @@ updated: 2026-08-19T13:06:00Z
 - Pages: .wiki/reference/hf-source.md
 - Verification: scripts/inspect-hf-source.sh && scripts/inspect-model.sh
 - Residual risk: 128K retrieval, 20-turn soak, and MTP server bench not yet re-run on SHA 3979ca0b.
+
+## 2026-08-21T13:33:48Z [qwen38-vision-mmproj]
+
+- Summary: Promoted the pinned GPU-offloaded mmproj and accepted HF chat template with fit target 2048,2048 after 32K, 256K, MTP, vision, soak, and production smoke gates.
+- Pages: decisions/deployment-baseline.md
+- Verification: scripts/inspect-hf-source.sh; bash -n scripts/*.sh; python3 -m py_compile scripts/*.py; git diff --check; retained candidate and production evidence
+- Residual risk: HF HEAD has revision-only drift while pinned file SHA and size remain matched; no runtime failure observed.
+
+## 2026-08-21T13:44:16Z [qwen38-vision-mmproj]
+
+- Summary: Advanced the pinned Hugging Face revision from 1962512c to the current 20b94f06 HEAD after confirming the GGUF, mmproj, and chat template identities remained byte-for-byte unchanged.
+- Pages: reference/hf-source.md
+- Verification: scripts/inspect-hf-source.sh
+- Residual risk: No artifact or runtime parameter changed; the prior revision remains documented as historical scope evidence.

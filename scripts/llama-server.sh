@@ -3,7 +3,10 @@ set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 server="$root/llama.cpp/build/bin/llama-server"
-model=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf
+model_dir=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF
+model="$model_dir/RVN-Q8_0-multilingual-mtp.gguf"
+mmproj="$model_dir/mmproj-Qwen3.8-27B-Q8_0.gguf"
+chat_template="$model_dir/chat_template.jinja"
 profile=${PROFILE:-agent}
 port=${PORT:-8000}
 host=${HOST:-127.0.0.1}
@@ -19,11 +22,12 @@ test -x "$server" || { echo "missing built llama-server; run scripts/build-llama
 
 exec "$server" \
   -m "$model" \
+  --mmproj "$mmproj" \
   --load-mode dio \
   -dev CUDA0,CUDA1 \
   -sm layer \
   --fit on \
-  --fit-target 4096,4096 \
+  --fit-target 2048,2048 \
   -ctk f16 \
   -ctv f16 \
   -c "$context" \
@@ -34,6 +38,6 @@ exec "$server" \
   --spec-type draft-mtp \
   --spec-draft-n-max 3 \
   --metrics \
-  --chat-template-file "$root/llama.cpp/models/templates/Qwen3.5-4B.jinja" \
+  --chat-template-file "$chat_template" \
   --host "$host" \
   --port "$port"

@@ -27,13 +27,24 @@ The model directory must be on the `/data/linux-fast` ext4 mount. Never copy, re
 
 Routine launchers always use the absolute Q8_0 multilingual MTP path above.
 
+The accepted production auxiliary artifacts are also pinned at:
+
+```text
+/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/mmproj-Qwen3.8-27B-Q8_0.gguf
+/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/chat_template.jinja
+```
+
+Production passes the projector with GPU offload by default and uses the pinned
+HF chat template. Their identity is verify-only through
+`scripts/inspect-hf-source.sh` and `evidence/hf-source.txt`.
+
 ## Runtime Contract
 
 `llama.cpp/` is the official `ggml-org/llama.cpp` submodule pinned by this repository's gitlink. Do not edit the submodule or pull it independently. Upgrade it only through a candidate build, basic probe, benchmark, agent soak, and a committed parent pin.
 
-`scripts/llama-server.sh` is the sole canonical server launcher. `agent` is the accepted production default: 256K, F16 KV, one slot, Flash Attention, GPU KV, two GPUs, layer split, and localhost. `baseline` is a fixed 32K smoke profile. Candidate A/B runs use `scripts/candidate-server.sh` / `scripts/run-mtp-candidate.sh` and must not edit production defaults in the same change.
+`scripts/llama-server.sh` is the sole canonical server launcher. `agent` is the accepted production default: 256K, F16 KV, one slot, Flash Attention, GPU KV, two GPUs, layer split, GPU mmproj, and the pinned HF chat template. Direct launches default to `127.0.0.1`; the installed `qwen38-27b.service` explicitly sets the authorized LAN endpoint `172.30.0.214:8000`. `baseline` is a fixed 32K smoke profile. Candidate A/B runs use `scripts/candidate-server.sh` / `scripts/run-mtp-candidate.sh` and must not edit production defaults in the same change.
 
-It uses `--load-mode dio`, `--fit on --fit-target 4096,4096`, and no CPU weight/KV offload. `--fit-target` is final free VRAM margin per GPU, not KV reservation: increasing it leaves more margin and may offload more weights. Do not add `--no-kv-offload`; GPU KV is llama.cpp's default.
+It uses `--load-mode dio`, `--fit on --fit-target 2048,2048`, and no CPU weight/KV offload. `2048,2048` is the explicitly approved new target for the vision scope and requires fresh runtime acceptance. `--fit-target` is final free VRAM margin per GPU, not KV reservation: increasing it leaves more margin and may offload more weights. Do not add `--no-kv-offload`; GPU KV is llama.cpp's default.
 
 The production GGUF has one NextN MTP layer (`blk.64.nextn.*`). MTP is mandatory in production: use `--spec-type draft-mtp --spec-draft-n-max 3`. Do not change the draft depth, use tensor split, or add a draft model/ngram mode without separate validation.
 
@@ -42,7 +53,7 @@ The production GGUF has one NextN MTP layer (`blk.64.nextn.*`). MTP is mandatory
 - Change exactly one runtime variable per comparison: fit target, ubatch, KV type, context, llama.cpp pin, sampling, or MTP draft depth.
 - Start the OOM ladder with a smaller ubatch, then more fit margin, then KV type, then context. CPU offload is a last resort and requires explicit scope.
 - Do not introduce vLLM, Python environments, model-making tooling, DeepSeek assets, Qwen3.6 settings, or historical benchmark data.
-- Bind only to `127.0.0.1` unless the user explicitly authorizes a wider bind.
+- Candidate and direct-launcher binds default to `127.0.0.1`. The tracked user service is the explicitly authorized exception and binds to `172.30.0.214`; do not widen it or change the unit in the vision scope.
 
 ## Host Integrity Gate
 
