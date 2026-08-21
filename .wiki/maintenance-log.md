@@ -14,6 +14,12 @@ updated: 2026-08-19T13:06:00Z
 
 # Maintenance Log
 
+## 2026-08-21 [qwen38-multilingual-mtp-identity]
+
+- Summary: Pinned mmproj and chat_template in the model directory; extended `scripts/inspect-hf-source.sh` to verify local SHA256/size/mode 0444 and remote pinned/HEAD identity for both auxiliary files. Both locked `0444` (via sudo; files owned `root:build`). Gate passes: local SHA `2e968a6a…e33eb` / `c3cf9e34…a81041`, pinned and HEAD remote etags match, HEAD revision-only drift for the main GGUF.
+- Pages: .wiki/reference/hf-source.md
+- Verification: scripts/inspect-hf-source.sh
+
 ## 2026-08-17
 
 - Initialized the deployment-only repository.

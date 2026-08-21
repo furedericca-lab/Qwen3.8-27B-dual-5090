@@ -6,3 +6,16 @@ hf_pinned_revision=1962512c7354d17e1cb761e3848d6c2226d176ad
 hf_lfs_sha256=3979ca0b400a091f60108906bd6a22907595e0dead3633bbda29b3400516f7bf
 hf_size_bytes=29047084512
 local_path=/data/linux-fast/models/Qwen3.8-27B-RVN-GGUF/RVN-Q8_0-multilingual-mtp.gguf
+# Pinned auxiliary files in the same model directory, same pinned revision.
+hf_mmproj_file=mmproj-Qwen3.8-27B-Q8_0.gguf
+hf_mmproj_sha256=2e968a6af97ce35d8971890b257b9b7edabf20ad91450501fa53162a19ee33eb
+hf_mmproj_size_bytes=629247008
+hf_mmproj_pinned_remote_etag=2e968a6af97ce35d8971890b257b9b7edabf20ad91450501fa53162a19ee33eb
+hf_mmproj_pinned_remote_etag=2e968a6af97ce35d8971890b257b9b7edabf20ad91450501fa53162a19ee33eb
+hf_chat_template_file=chat_template.jinja
+hf_chat_template_sha256=c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041
+hf_chat_template_size_bytes=8952
+# Non-LFS file: remote x-linked-etag is a content md5, not the SHA256.
+hf_chat_template_pinned_remote_etag=c0c686f9c38d70d179fb7b5f5aa7530bc913dda3
+# Non-LFS file: remote x-linked-etag is a content md5, not the SHA256.
+hf_chat_template_pinned_remote_etag=c0c686f9c38d70d179fb7b5f5aa7530bc913dda3
